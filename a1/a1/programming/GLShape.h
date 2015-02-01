@@ -11,10 +11,7 @@
 **************************************************************************/
 
 // apple defines
-#ifndef __APPLE__
-    #define glBindVertexArray glBindVertexArray
-    #define glGenVertexArrays glGenVertexArrays
-#else
+#ifdef __APPLE__
     #define glBindVertexArray glBindVertexArrayAPPLE
     #define glGenVertexArrays glGenVertexArraysAPPLE
 #endif

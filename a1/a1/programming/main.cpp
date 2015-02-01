@@ -44,8 +44,6 @@ int main(int argc, char** argv)
     int width = 800;
     int height = 600;
 
-    const unsigned char* glversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-    std::cout << glversion << std::endl;
 
     // See if the user passed command-line arguments for the window size.
     if (argc != 3)
