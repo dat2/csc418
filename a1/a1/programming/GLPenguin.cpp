@@ -1,5 +1,7 @@
 #include "GLPenguin.h"
 
+#define RGB_TO_OPENGL(x,y,z) x/255.0, y/255.0, z/255.0
+
 const float LEG_LENGTH = 100.0f;
 const float LEG_WIDTH = 20.0f;
 
@@ -33,7 +35,7 @@ void GLPenguin::draw(void)
         transformStack().translate(0.0, -0.5);
 
         // Draw the square for the arm
-        m_gl_state.setColor(1.0, 0.0, 0.0);
+        m_gl_state.setColor(RGB_TO_OPENGL(255, 0, 0));
         m_unit_square.draw();
 
     // Retrieve the previous state of the transformation stack
@@ -45,7 +47,7 @@ void GLPenguin::drawBody(void)
     transformStack().pushMatrix();
         transformStack().scale(BODY_WIDTH, BODY_LENGTH);
 
-        m_gl_state.setColor(0.0, 0.0, 0.0);
+        m_gl_state.setColor(RGB_TO_OPENGL(0,0,0));
         m_unit_hexagon.draw();
     transformStack().popMatrix();
 }
