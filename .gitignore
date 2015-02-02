@@ -112,7 +112,13 @@ sympy-plots-for-*.tex/
 *.a
 *.lib
 
+# Qt generated files
+*_moc*
+
 # Executables
 *.exe
 *.out
 *.app
+
+# actual executable names
+penguin
