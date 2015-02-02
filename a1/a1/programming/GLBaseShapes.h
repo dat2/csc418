@@ -78,4 +78,33 @@ public:
     }
 };
 
+class UnitHexagon : public GLShape
+{
+public:
+    using GLShape::initialize;
+
+    void initialize(int shader_input_location)
+    {
+
+        GLfloat hex_vertices[][2] =
+        {
+            {  0.0,  0.0 },
+            {  0.5,  1.0 },
+            { -0.5,  1.0 }, // top slice
+            { -1.0, -0.5 }, // left top slice
+            { -0.5, -1.0 }, // left bottom slice
+            {  0.5, -1.0 }, // bottom slice
+            {  1.0, -0.5 }, // right bottom slice
+            {  0.5,  1.0 }, // top right slice
+        };
+
+        initialize(
+        shader_input_location,
+            reinterpret_cast<const GLfloat *>(hex_vertices),
+            /*num_vertices=*/8,
+        GL_TRIANGLE_FAN);
+    }
+
+};
+
 #endif
