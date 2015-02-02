@@ -1,8 +1,8 @@
 /*************************************************************************
     CSC418/2504, Winter 20l5
     Assignment 1
-  
-  
+
+
     Instructions:
         See main.cpp for more instructions.
 
@@ -42,12 +42,20 @@ public:
         m_main_layout->addWidget(m_gl_widget);
 
         // Create a slider to control the joint angle, and make it call
-        // GLWidget::setJointAngle when the slider value changes.
-        m_slider = create_joint_angle_slider(
-	    "Joint", GLWidget::JOINT_MIN, GLWidget::JOINT_MAX);
+        // GLWidget::setArmAngle when the slider value changes.
+        m_arm_slider = create_joint_angle_slider(
+	    "Arm Angle", GLWidget::ARM_MIN, GLWidget::ARM_MAX);
         connect(
-            m_slider, SIGNAL(valueChanged(int)),
-            m_gl_widget, SLOT(setJointAngle(int)));
+            m_arm_slider, SIGNAL(valueChanged(int)),
+            m_gl_widget, SLOT(setArmAngle(int)));
+        m_arm_slider->setValue(0);
+
+        m_head_slider = create_joint_angle_slider(
+        "Head Angle", GLWidget::HEAD_MIN, GLWidget::HEAD_MAX);
+        connect(
+            m_head_slider, SIGNAL(valueChanged(int)),
+            m_gl_widget, SLOT(setHeadAngle(int)));
+        m_head_slider->setValue(0);
 
         //////////////////////////////////////////////////////
         // TODO: Add additional joint sliders here
@@ -57,7 +65,6 @@ public:
         m_main_layout->addWidget(m_quit_button);
         setLayout(m_main_layout);
 
-        m_slider->setValue(0);
         setWindowTitle("CSC418/2504 Assignment 1");
     }
 
@@ -78,10 +85,10 @@ private:
         slider->setTickInterval(5);
         slider->setTickPosition(QSlider::TicksBelow);
 
-	QBoxLayout *layout = new QHBoxLayout();
-	layout->addWidget(new QLabel(label));
-	layout->addWidget(slider);
-	m_main_layout->addLayout(layout);
+    	QBoxLayout *layout = new QHBoxLayout();
+    	layout->addWidget(new QLabel(label));
+    	layout->addWidget(slider);
+    	m_main_layout->addLayout(layout);
 
         return slider;
     }
@@ -89,7 +96,12 @@ private:
     GLWidget *m_gl_widget;
     QCheckBox *m_animate_checkbox;
     QPushButton *m_quit_button;
-    QSlider *m_slider;
+    QSlider *m_arm_slider;
+    QSlider *m_head_slider;
+    QSlider *m_left_leg_slider;
+    QSlider *m_left_knee_slider;
+    QSlider *m_right_knee_slider;
+    QSlider *m_right_leg_slider;
     QVBoxLayout *m_main_layout;
 };
 

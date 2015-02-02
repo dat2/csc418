@@ -7,16 +7,28 @@
 class GLPenguin
 {
 public:
-    GLPenguin(GLTransformStack &stack, GLState &glState,
-    UnitSquare &unitSquare, UnitCircle &unitCircle)
-        : transformStack(stack)
-        , m_gl_state(glState)
-        , m_unit_square(unitSquare)
-        , m_unit_circle(unitCircle)
+    GLPenguin(GLState &glState)
+        : m_gl_state(glState)
+        , m_head_angle(0)
+        , m_arm_angle(0)
+        , m_left_leg_angle(0)
+        , m_left_knee_angle(0)
+        , m_right_leg_angle(45)
+        , m_right_knee_angle(0)
         {}
-    void drawBody(void);
 
+    void initialize() {
+        // Copy the data for the shapes we'll draw into the video card's memory.
+        m_unit_square.initialize(m_gl_state.VERTEX_POSITION_SHADER_LOCATION);
+        m_unit_circle.initialize(
+        m_gl_state.VERTEX_POSITION_SHADER_LOCATION,
+        /*num_circle_segments=*/100);
+        m_unit_hexagon.initialize(m_gl_state.VERTEX_POSITION_SHADER_LOCATION);
+    }
+
+    void draw(void);
 private:
+    void drawBody(void);
     GLState &m_gl_state;
     GLTransformStack &transformStack;
     UnitSquare &m_unit_square;

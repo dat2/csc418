@@ -28,8 +28,23 @@ public:
     //   Add different ranges for the different joints.  Use these ranges
     //   when constructing sliders and when animating joints.
     //////////////////////////////////////////////////////////////////////////
-    static const int JOINT_MIN = -45;
-    static const int JOINT_MAX = 45;
+    static const int HEAD_MIN = -45;
+    static const int HEAD_MAX = 45;
+
+    static const int ARM_MIN = -45;
+    static const int ARM_MAX = 45;
+
+    static const int LEFT_LEG_MIN = -45;
+    static const int LEFT_LEG_MAX = 45;
+
+    static const int LEFT_KNEE_MIN = -45;
+    static const int LEFT_KNEE_MAX = 45;
+
+    static const int RIGHT_KNEE_MIN = -45;
+    static const int RIGHT_KNEE_MAX = 45;
+
+    static const int RIGHT_LEG_MIN = -45;
+    static const int RIGHT_LEG_MAX = 45;
 
     explicit GLWidget(QWidget *parent=NULL);
 
@@ -39,10 +54,19 @@ public slots:
     // TODO:
     //   There is currently only one joint, but you need to add more.
     //////////////////////////////////////////////////////////////////////////
-    void setJointAngle(int angle)
+    void setHeadAngle(int angle)
     {
         // This method is called when the user changes the slider value.
-        m_joint_angle = angle;
+        m_penguin.setHeadAngle(angle);
+
+        // Call update() to trigger a redraw.
+        update();
+    }
+
+    void setArmAngle(int angle)
+    {
+        // This method is called when the user changes the slider value.
+        m_penguin.setArmAngle(angle);
 
         // Call update() to trigger a redraw.
         update();
@@ -78,7 +102,6 @@ private:
     // TODO: Add additional joint parameters.
     //////////////////////////////////////////////////////////////////////////
     GLPenguin m_penguin;
-    double m_joint_angle;
 };
 
 #endif

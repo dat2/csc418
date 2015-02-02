@@ -31,8 +31,7 @@ GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(createQGLFormat(), parent)
     , m_is_animating(false)
     , m_animation_frame(0)
-    , m_joint_angle(0)
-    , m_penguin(transformStack(), m_gl_state, m_unit_square, m_unit_circle)
+    , m_penguin(m_gl_state)
 {
     // Start a timer that will call the timerEvent method every 50ms.
     startTimer(/*milliseconds=*/50);
@@ -46,11 +45,7 @@ void GLWidget::initializeGL()
     // told the driver to use.
     std::cout << "Using OpenGL: " << glGetString(GL_VERSION) << std::endl;
 
-    // Copy the data for the shapes we'll draw into the video card's memory.
-    m_unit_square.initialize(m_gl_state.VERTEX_POSITION_SHADER_LOCATION);
-    m_unit_circle.initialize(
-	m_gl_state.VERTEX_POSITION_SHADER_LOCATION,
-	/*num_circle_segments=*/100);
+    m_penguin.initialize();
 
     // Tell OpenGL what color to fill the background to when clearing.
     glClearColor(/*red=*/0.7f, /*green=*/0.7f, /*blue=*/0.9f, /*alpha=*/1.0f);
@@ -82,10 +77,10 @@ void GLWidget::timerEvent(QTimerEvent *)
     m_animation_frame++;
 
     // Update joint angles.
-    const double joint_rot_speed = 0.1;
-    double joint_rot_t =
-        (sin(m_animation_frame * joint_rot_speed) + 1.0) / 2.0;
-    m_joint_angle = joint_rot_t * JOINT_MIN + (1 - joint_rot_t) * JOINT_MAX;
+    const double arm_rot_speed = 0.1;
+    double arm_rot_t =
+        (sin(m_animation_frame * arm_rot_speed) + 1.0) / 2.0;
+    m_penguin.setArmAngle(arm_rot_t * ARM_MIN + (1 - arm_rot_t) * ARM_MAX);
 
     //////////////////////////////////////////////////////////////////////////
     // TODO:
@@ -155,9 +150,9 @@ void GLWidget::paintGL()
     // Retrieve the previous state of the transformation stack
     transformStack().popMatrix();
 
+    m_penguin.draw();
 
     // Execute any GL functions that are in the queue just to be safe
     glFlush();
     checkForGLErrors();
 }
-

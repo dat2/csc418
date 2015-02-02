@@ -18,7 +18,7 @@ QTHEADERS     = MainWindow.h \
 main.o:     include_gl.h MainWindow.h GLWidget.h GLTransformStack.h GLState.h \
             GLShape.h Matrix3x3.h Matrix4x4.h
 GLWidget.o: include_gl.h GLWidget.h GLTransformStack.h GLState.h GLShape.h \
-            Matrix3x3.h Matrix4x4.h
+            Matrix3x3.h Matrix4x4.h GLPenguin.h GLBaseShapes.h
 GLState.o:  include_gl.h GLTransformStack.h GLState.h GLShape.h Matrix3x3.h \
             Matrix4x4.h
 
