@@ -7,7 +7,8 @@ all: $(PROGRAM)
 # Define all C++ source files here
 CPPSRCS       = main.cpp \
                 GLState.cpp \
-                GLWidget.cpp
+                GLWidget.cpp \
+                GLPenguin.cpp
 
 # Define all Qt headers here
 QTHEADERS     = MainWindow.h \

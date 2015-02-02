@@ -13,73 +13,9 @@
 
 #include "include_gl.h"
 #include "GLState.h"
-#include "GLShape.h"
+#include "GLBaseShapes.h"
+#include "GLPenguin.h"
 #include <QtOpenGL/QtOpenGL>
-
-// Before transformed, this class displays a unit square centered at the
-// origin.
-class UnitSquare : public GLShape
-{
-public:
-    using GLShape::initialize;
-
-    void initialize(int shader_input_location)
-    {
-	// Use two triangles to create the square.
-        GLfloat square_vertices[][2] =
-        {
-            { -0.5, -0.5 },  // Triangle 1
-            {  0.5, -0.5 },
-            {  0.5,  0.5 },
-            { -0.5, -0.5 },  // Triangle 2
-            {  0.5,  0.5 },
-            { -0.5,  0.5 },
-        };
-
-        initialize(
-	    shader_input_location,
-            reinterpret_cast<const GLfloat *>(square_vertices),
-            /*num_vertices=*/6,
-	    GL_TRIANGLES); // Each group of three coordinates is a triangle
-    }
-};
-
-// Before transformed, this class displays a unit circle centered at the
-// origin.
-class UnitCircle : public GLShape
-{
-public:
-    using GLShape::initialize;
-
-    void initialize(int shader_input_location, int num_circle_segments)
-    {
-        // We will draw a circle as a triangle fan.  We are careful to send
-	// the second coordinate twice to properly close the circle.
-        //        3     2     1
-        //         +----+----+
-        //        / \   |   /
-        //       /   \  |  /
-        //      /     \ | /
-        //     /       \|/
-        //   4+---------+ 0
-        //        ...
-        std::vector<GLfloat> circle_vertices;
-        circle_vertices.push_back(0.0);
-        circle_vertices.push_back(0.0);
-        for (int i=0; i<=num_circle_segments; ++i)
-        {
-            double angle = (2 * M_PI * i) / num_circle_segments;
-            circle_vertices.push_back(cos(angle));
-            circle_vertices.push_back(sin(angle));
-        }
-
-        initialize(
-	    shader_input_location,
-            &circle_vertices[0],
-            num_circle_segments + 1,
-	    GL_TRIANGLE_FAN);
-    }
-};
 
 class GLWidget : public QGLWidget
 {
@@ -95,7 +31,7 @@ public:
     static const int JOINT_MIN = -45;
     static const int JOINT_MAX = 45;
 
-    GLWidget(QWidget *parent=NULL);
+    explicit GLWidget(QWidget *parent=NULL);
 
 public slots:
     // This method is called when the user changes the joint angle slider.
@@ -125,6 +61,7 @@ protected:
     void resizeGL(int width, int height);
     void paintGL();
     void timerEvent(QTimerEvent *event);
+    void drawBody();
 
 private:
     GLTransformStack &transformStack()
@@ -134,11 +71,13 @@ private:
     GLState m_gl_state;
     bool m_is_animating;
     int m_animation_frame;
+
     UnitSquare m_unit_square;
     UnitCircle m_unit_circle;
     //////////////////////////////////////////////////////////////////////////
     // TODO: Add additional joint parameters.
     //////////////////////////////////////////////////////////////////////////
+    GLPenguin m_penguin;
     double m_joint_angle;
 };
 
