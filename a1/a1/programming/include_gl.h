@@ -46,13 +46,18 @@
 
 // This macro can be helpful to track down the cause of OpenGL errors.
 #include <iostream>
+
 #define checkForGLErrors() \
 { \
+    _Pragma("GCC diagnostic push") \
+    _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"") \
     GLenum error_code = glGetError(); \
     if (error_code != GL_NO_ERROR) \
         std::cerr << __FILE__ << ":" << __LINE__ << ": " \
             << gluErrorString(error_code) << "\n"; \
+    _Pragma("GCC diagnostic pop") \
 }
+
 
 // Wrap your OpenGL function calls in this macro and #define DEBUG_OPENGL
 // to check the result after each call.
