@@ -115,41 +115,6 @@ void GLWidget::paintGL()
     //////////////////////////////////////////////////////////////////////////
 
     // Draw our hinged object
-    const float LEG_LENGTH = 100.0f;
-    const float LEG_WIDTH = 20.0f;
-
-    const float BODY_WIDTH = 60.0f;
-    const float BODY_LENGTH = 100.0f;
-
-    // Note that successive transformations are applied *before* the previous
-    // ones.
-
-    // Push the current transformation matrix on the stack
-    transformStack().pushMatrix();
-
-        m_penguin.drawBody();
-
-        // Draw the 'arm'
-
-        // Move the arm to the joint hinge
-        transformStack().translate(0.0, -BODY_LENGTH/3 + LEG_WIDTH);
-
-        // Rotate along the hinge
-        transformStack().rotateInDegrees(m_joint_angle);
-
-        // Scale the size of the arm
-        transformStack().scale(LEG_WIDTH, LEG_LENGTH);
-
-        // Move to center location of arm, under previous rotation
-        transformStack().translate(0.0, -0.5);
-
-        // Draw the square for the arm
-        m_gl_state.setColor(1.0, 0.0, 0.0);
-	    m_unit_square.draw();
-
-    // Retrieve the previous state of the transformation stack
-    transformStack().popMatrix();
-
     m_penguin.draw();
 
     // Execute any GL functions that are in the queue just to be safe

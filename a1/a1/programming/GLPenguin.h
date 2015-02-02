@@ -27,12 +27,34 @@ public:
     }
 
     void draw(void);
+
+    void setHeadAngle(const float angle)
+    { m_head_angle = angle; };
+    void setArmAngle(const float angle)
+    { m_arm_angle = angle; };
+    void setLeftLegAngle(const float angle)
+    { m_left_leg_angle = angle; };
+    void setLeftKneeAngle(const float angle)
+    { m_left_knee_angle = angle; };
+    void setRightLegAngle(const float angle)
+    { m_right_leg_angle = angle; };
+    void setRightKneeAngle(const float angle)
+    { m_right_knee_angle = angle; };
+
 private:
+    GLTransformStack &transformStack()
+    { return m_gl_state.transformStack(); }
+
     void drawBody(void);
+    void drawArm(void);
+    void drawLeftLeg(void);
+    void drawRightLeg(void);
+    void drawHead(void);
+
     GLState &m_gl_state;
-    GLTransformStack &transformStack;
-    UnitSquare &m_unit_square;
-    UnitCircle &m_unit_circle;
+    UnitSquare m_unit_square;
+    UnitCircle m_unit_circle;
+    UnitHexagon m_unit_hexagon;
 
     double m_head_angle;
     double m_arm_angle;
