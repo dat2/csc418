@@ -8,8 +8,7 @@ class GLPenguin
 {
 public:
     GLPenguin(GLState &glState)
-        : m_gl_state(glState)
-        , m_head_angle(0)
+        : m_head_angle(0)
         , m_arm_angle(0)
         , m_left_leg_angle(-25)
         , m_left_foot_angle(0)
@@ -18,6 +17,7 @@ public:
         , m_x(0)
         , m_y(0)
         , m_beak_height(0)
+        , m_gl_state(glState)
         {}
 
     void initialize() {
@@ -33,49 +33,18 @@ public:
 
     void draw(void);
 
-    // setters
-    void setX(const float x)
-    { m_x = x; }
-    void setY(const float y)
-    { m_y = y; }
+    // its easier this way since glwidget owns this
+    double m_head_angle;
+    double m_arm_angle;
+    double m_left_leg_angle;
+    double m_left_foot_angle;
+    double m_right_leg_angle;
+    double m_right_foot_angle;
 
-    void setBeakHeight(const float beak_height)
-    { m_beak_height = beak_height; }
+    double m_x;
+    double m_y;
 
-    void setHeadAngle(const float angle)
-    { m_head_angle = angle; };
-    void setArmAngle(const float angle)
-    { m_arm_angle = angle; };
-    void setLeftLegAngle(const float angle)
-    { m_left_leg_angle = angle; };
-    void setLeftFootAngle(const float angle)
-    { m_left_foot_angle = angle; };
-    void setRightLegAngle(const float angle)
-    { m_right_leg_angle = angle; };
-    void setRightFootAngle(const float angle)
-    { m_right_foot_angle = angle; };
-
-    // getters
-    float getX() const
-    { return m_x; }
-    float getY() const
-    { return m_y; }
-
-    float getBeakHeight() const
-    { return m_beak_height; }
-
-    float getHeadAngle() const
-    { return m_head_angle; };
-    float getArmAngle() const
-    { return m_arm_angle; };
-    float getLeftLegAngle() const
-    { return m_left_leg_angle; };
-    float getLeftFootAngle() const
-    { return m_left_foot_angle; };
-    float getRightLegAngle() const
-    { return m_right_leg_angle; };
-    float getRightFootAngle() const
-    { return m_right_foot_angle; };
+    double m_beak_height;
 
 private:
     GLTransformStack &transformStack()
@@ -98,18 +67,6 @@ private:
     PenguinTorso m_torso;
     PenguinHead m_head;
     PenguinBeak m_beak;
-
-    double m_head_angle;
-    double m_arm_angle;
-    double m_left_leg_angle;
-    double m_left_foot_angle;
-    double m_right_leg_angle;
-    double m_right_foot_angle;
-
-    double m_x;
-    double m_y;
-
-    double m_beak_height;
 };
 
 #endif

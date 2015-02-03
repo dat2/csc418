@@ -59,23 +59,23 @@ public:
 
 public slots:
     void onSetHeadAngle(int angle)
-    { m_penguin.setHeadAngle(angle); update(); }
+    { m_penguin.m_head_angle = angle; update(); }
     void onSetArmAngle(int angle)
-    { m_penguin.setArmAngle(angle); update(); }
+    { m_penguin.m_arm_angle = angle; update(); }
     void onSetLeftLegAngle(int angle)
-    { m_penguin.setLeftLegAngle(angle); update(); }
+    { m_penguin.m_left_leg_angle = angle; update(); }
     void onSetLeftFootAngle(int angle)
-    { m_penguin.setLeftFootAngle(angle); update(); }
+    { m_penguin.m_left_foot_angle = angle; update(); }
     void onSetRightLegAngle(int angle)
-    { m_penguin.setRightLegAngle(angle); update(); }
+    { m_penguin.m_right_leg_angle = angle; update(); }
     void onSetRightFootAngle(int angle)
-    { m_penguin.setRightFootAngle(angle); update(); }
+    { m_penguin.m_right_foot_angle = angle; update(); }
     void onSetX(int x)
-    { m_penguin.setX(x); update(); }
+    { m_penguin.m_x = x; update(); }
     void onSetY(int y)
-    { m_penguin.setY(-y); update(); }
+    { m_penguin.m_y = -y; update(); }
     void onSetBeakHeight(int height)
-    { m_penguin.setBeakHeight(height); update(); }
+    { m_penguin.m_beak_height = height; update(); }
 
     void onPressAnimate(int is_animating)
     {
@@ -86,24 +86,24 @@ public slots:
     }
 
     float getX() const
-    { return m_penguin.getX(); }
+    { return m_penguin.m_x; }
     float getY() const
-    { return m_penguin.getY(); }
+    { return m_penguin.m_y; }
     float getBeakHeight() const
-    { return m_penguin.getBeakHeight(); }
+    { return m_penguin.m_beak_height; }
 
     float getHeadAngle() const
-    { return m_penguin.getHeadAngle(); };
+    { return m_penguin.m_head_angle; };
     float getArmAngle() const
-    { return m_penguin.getArmAngle(); };
+    { return m_penguin.m_arm_angle; };
     float getLeftLegAngle() const
-    { return m_penguin.getLeftLegAngle(); };
+    { return m_penguin.m_left_leg_angle; };
     float getLeftFootAngle() const
-    { return m_penguin.getLeftFootAngle(); };
+    { return m_penguin.m_left_foot_angle; };
     float getRightLegAngle() const
-    { return m_penguin.getRightLegAngle(); };
+    { return m_penguin.m_right_leg_angle; };
     float getRightFootAngle() const
-    { return m_penguin.getRightFootAngle(); };
+    { return m_penguin.m_right_foot_angle; };
 
 protected:
     void initializeGL();

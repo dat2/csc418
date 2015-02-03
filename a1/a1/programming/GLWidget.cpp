@@ -77,13 +77,12 @@ void GLWidget::timerEvent(QTimerEvent *)
     m_animation_frame++;
 
     // Update joint angles.
-    const double rot_speed = 0.1;
-    double rot_t =
-        (sin(m_animation_frame * rot_speed) + 1.0) / 2.0;
-    double interpolated_rot = rot_t * ARM_MIN + (1 - rot_t) * ARM_MAX;
+    const double arm_rot_speed = 0.1;
+    double arm_rot_t =
+        (sin(m_animation_frame * arm_rot_speed) + 1.0) / 2.0;
+    m_penguin.m_arm_angle = arm_rot_t * ARM_MIN + (1 - arm_rot_t) * ARM_MAX;
 
-    m_penguin.setArmAngle(interpolated_rot);
-    m_penguin.setHeadAngle(interpolated_rot);
+    // m_penguin.m_head_angle = interpolated_rot;
 
     //////////////////////////////////////////////////////////////////////////
     // TODO:
