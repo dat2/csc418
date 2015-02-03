@@ -28,8 +28,11 @@ public:
     //   Add different ranges for the different joints.  Use these ranges
     //   when constructing sliders and when animating joints.
     //////////////////////////////////////////////////////////////////////////
-    static const int HEAD_MIN = -45;
-    static const int HEAD_MAX = 45;
+    static const int HEAD_MIN = -15;
+    static const int HEAD_MAX = 15;
+
+    static const int BEAK_MIN = -8;
+    static const int BEAK_MAX = 0;
 
     static const int ARM_MIN = -45;
     static const int ARM_MAX = 45;
@@ -37,40 +40,42 @@ public:
     static const int LEFT_LEG_MIN = -45;
     static const int LEFT_LEG_MAX = 45;
 
-    static const int LEFT_KNEE_MIN = -45;
-    static const int LEFT_KNEE_MAX = 45;
-
-    static const int RIGHT_KNEE_MIN = -45;
-    static const int RIGHT_KNEE_MAX = 45;
+    static const int LEFT_FOOT_MIN = -45;
+    static const int LEFT_FOOT_MAX = 45;
 
     static const int RIGHT_LEG_MIN = -45;
     static const int RIGHT_LEG_MAX = 45;
 
+    static const int RIGHT_FOOT_MIN = -45;
+    static const int RIGHT_FOOT_MAX = 45;
+
+    static const int X_MIN = -300;
+    static const int X_MAX = 300;
+
+    static const int Y_MIN = -100;
+    static const int Y_MAX = 100;
+
     explicit GLWidget(QWidget *parent=NULL);
 
 public slots:
-    // This method is called when the user changes the joint angle slider.
-    //////////////////////////////////////////////////////////////////////////
-    // TODO:
-    //   There is currently only one joint, but you need to add more.
-    //////////////////////////////////////////////////////////////////////////
-    void setHeadAngle(int angle)
-    {
-        // This method is called when the user changes the slider value.
-        m_penguin.setHeadAngle(angle);
-
-        // Call update() to trigger a redraw.
-        update();
-    }
-
-    void setArmAngle(int angle)
-    {
-        // This method is called when the user changes the slider value.
-        m_penguin.setArmAngle(angle);
-
-        // Call update() to trigger a redraw.
-        update();
-    }
+    void onSetHeadAngle(int angle)
+    { m_penguin.setHeadAngle(angle); update(); }
+    void onSetArmAngle(int angle)
+    { m_penguin.setArmAngle(angle); update(); }
+    void onSetLeftLegAngle(int angle)
+    { m_penguin.setLeftLegAngle(angle); update(); }
+    void onSetLeftFootAngle(int angle)
+    { m_penguin.setLeftFootAngle(angle); update(); }
+    void onSetRightLegAngle(int angle)
+    { m_penguin.setRightLegAngle(angle); update(); }
+    void onSetRightFootAngle(int angle)
+    { m_penguin.setRightFootAngle(angle); update(); }
+    void onSetX(int x)
+    { m_penguin.setX(x); update(); }
+    void onSetY(int y)
+    { m_penguin.setY(-y); update(); }
+    void onSetBeakHeight(int height)
+    { m_penguin.setBeakHeight(height); update(); }
 
     void onPressAnimate(int is_animating)
     {
@@ -80,12 +85,31 @@ public slots:
         update();
     }
 
+    float getX() const
+    { return m_penguin.getX(); }
+    float getY() const
+    { return m_penguin.getY(); }
+    float getBeakHeight() const
+    { return m_penguin.getBeakHeight(); }
+
+    float getHeadAngle() const
+    { return m_penguin.getHeadAngle(); };
+    float getArmAngle() const
+    { return m_penguin.getArmAngle(); };
+    float getLeftLegAngle() const
+    { return m_penguin.getLeftLegAngle(); };
+    float getLeftFootAngle() const
+    { return m_penguin.getLeftFootAngle(); };
+    float getRightLegAngle() const
+    { return m_penguin.getRightLegAngle(); };
+    float getRightFootAngle() const
+    { return m_penguin.getRightFootAngle(); };
+
 protected:
     void initializeGL();
     void resizeGL(int width, int height);
     void paintGL();
     void timerEvent(QTimerEvent *event);
-    void drawBody();
 
 private:
     GLTransformStack &transformStack()

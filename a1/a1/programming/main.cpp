@@ -42,7 +42,7 @@
 int main(int argc, char** argv)
 {
     int width = 800;
-    int height = 600;
+    int height = 800;
 
 
     // See if the user passed command-line arguments for the window size.

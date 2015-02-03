@@ -16,11 +16,11 @@ QTHEADERS     = MainWindow.h \
 
 # Dependencies on header files:
 main.o:     include_gl.h MainWindow.h GLWidget.h GLTransformStack.h GLState.h \
-            GLShape.h Matrix3x3.h Matrix4x4.h
+            GLShape.h Matrix3x3.h Matrix4x4.h GLPenguin.h GLBaseShapes.h
 GLWidget.o: include_gl.h GLWidget.h GLTransformStack.h GLState.h GLShape.h \
             Matrix3x3.h Matrix4x4.h GLPenguin.h GLBaseShapes.h
 GLState.o:  include_gl.h GLTransformStack.h GLState.h GLShape.h Matrix3x3.h \
-            Matrix4x4.h
+            Matrix4x4.h GLBaseShapes.h
 
 # If Qt isn't installed on CDF machines then look in the course directory.
 ifeq ($(wildcard /usr/include/qt4),)

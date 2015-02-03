@@ -51,7 +51,7 @@ public:
     void initialize(int shader_input_location, int num_circle_segments)
     {
         // We will draw a circle as a triangle fan.  We are careful to send
-    // the second coordinate twice to properly close the circle.
+        // the second coordinate twice to properly close the circle.
         //        3     2     1
         //         +----+----+
         //        / \   |   /
@@ -73,28 +73,29 @@ public:
         initialize(
         shader_input_location,
             &circle_vertices[0],
-            num_circle_segments + 1,
+            num_circle_segments + 2,
         GL_TRIANGLE_FAN);
     }
 };
 
-class UnitHexagon : public GLShape
+class PenguinTorso : public GLShape
 {
 public:
     using GLShape::initialize;
 
     void initialize(int shader_input_location)
     {
-
+        // a simple hexagon
+        // with the horizontal vertices are shifted down
         GLfloat hex_vertices[][2] =
         {
             {  0.0,  0.0 },
             {  0.5,  1.0 },
             { -0.5,  1.0 }, // top slice
-            { -1.0, -0.5 }, // left top slice
-            { -0.5, -1.0 }, // left bottom slice
+            { -1.0, -0.2 }, // left top slice
+            { -0.4, -1.0 }, // left bottom slice
             {  0.5, -1.0 }, // bottom slice
-            {  1.0, -0.5 }, // right bottom slice
+            {  1.0, -0.2 }, // right bottom slice
             {  0.5,  1.0 }, // top right slice
         };
 
@@ -103,6 +104,59 @@ public:
             reinterpret_cast<const GLfloat *>(hex_vertices),
             /*num_vertices=*/8,
         GL_TRIANGLE_FAN);
+    }
+};
+
+class PenguinHead : public GLShape
+{
+public:
+    using GLShape::initialize;
+
+    void initialize(int shader_input_location)
+    {
+        // a simple hexagon
+        // with the horizontal vertices are shifted down
+        GLfloat hex_vertices[][2] =
+        {
+            {  0.0,  1.0 },
+            { -0.85,  0.5 },
+            {  0.85,  0.5 },
+            { -1.0, -1.0 },
+            {  1.0, -1.0 },
+        };
+
+        initialize(
+        shader_input_location,
+            reinterpret_cast<const GLfloat *>(hex_vertices),
+            /*num_vertices=*/5,
+        GL_TRIANGLE_STRIP);
+    }
+
+};
+
+
+class PenguinBeak : public GLShape
+{
+public:
+    using GLShape::initialize;
+
+    void initialize(int shader_input_location)
+    {
+        // a simple hexagon
+        // with the horizontal vertices are shifted down
+        GLfloat hex_vertices[][2] =
+        {
+            {  1.0,  0.5 },
+            { -1.0,  0.0 },
+            {  1.0, -1.0 },
+            { -1.0, -1.0 },
+        };
+
+        initialize(
+        shader_input_location,
+            reinterpret_cast<const GLfloat *>(hex_vertices),
+            /*num_vertices=*/4,
+        GL_TRIANGLE_STRIP);
     }
 
 };
