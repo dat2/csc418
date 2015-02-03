@@ -51,10 +51,12 @@ void GLPenguin::draw(void)
 void GLPenguin::drawTorso(void)
 {
     transformStack().pushMatrix();
+        // draw black torso
         transformStack().scale(BODY_WIDTH, BODY_LENGTH);
         m_gl_state.setColor(BLACK);
         m_torso.draw();
 
+        // draw smaller white torso above it
         transformStack().scale(0.9, 0.9);
         m_gl_state.setColor(WHITE);
         m_torso.draw();

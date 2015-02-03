@@ -81,6 +81,7 @@ void GLWidget::timerEvent(QTimerEvent *)
     double rot_t =
         (sin(m_animation_frame * rot_speed) + 1.0) / 2.0;
     double interpolated_rot = rot_t * ARM_MIN + (1 - rot_t) * ARM_MAX;
+
     m_penguin.setArmAngle(interpolated_rot);
     m_penguin.setHeadAngle(interpolated_rot);
 

@@ -33,6 +33,7 @@ public:
 
     void draw(void);
 
+    // setters
     void setX(const float x)
     { m_x = x; }
     void setY(const float y)
@@ -54,6 +55,7 @@ public:
     void setRightFootAngle(const float angle)
     { m_right_foot_angle = angle; };
 
+    // getters
     float getX() const
     { return m_x; }
     float getY() const
