@@ -92,10 +92,11 @@ void GLPenguin::drawArm(void)
 void GLPenguin::drawHead(void)
 {
     transformStack().pushMatrix();
+        // move the head
         transformStack().translate(0, BODY_LENGTH);
-        transformStack().rotateInDegrees(m_head_angle);
 
-        // draw eye
+        // rotate the head
+        transformStack().rotateInDegrees(m_head_angle);
 
         // draw beak
         transformStack().pushMatrix();
@@ -129,6 +130,22 @@ void GLPenguin::drawHead(void)
 
             m_gl_state.setColor(BLACK);
             m_head.draw();
+        transformStack().popMatrix();
+
+        // draw eye
+        transformStack().pushMatrix();
+            // move to the left side of the head
+            transformStack().translate(-HEAD_WIDTH / 2, HEAD_HEIGHT);
+
+            // draw the eyeball
+            transformStack().scale(EYE_RADIUS, EYE_RADIUS);
+            m_gl_state.setColor(WHITE);
+            m_unit_circle.draw();
+
+            // draw the iris
+            transformStack().scale(0.5, 0.5);
+            m_gl_state.setColor(BLACK);
+            m_unit_circle.draw();
         transformStack().popMatrix();
 
         drawHinge();
