@@ -56,7 +56,7 @@
 \normalfont \normalsize
 \textsc{University of Toronto} \\ [25pt] % Your university, school and/or department name(s)
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
-\huge Assignment Title \\ % The assignment title
+\huge CSC418 Assignment 1 Part A \\ % The assignment title
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
@@ -479,7 +479,7 @@ Some pseudo code:
 \State \Return False \Comment{reversing the order gives you an outward facing normal here}
 \EndIf
 \EndFor
-\State \Return True 
+\State \Return True
 \EndFunction
 \end{algorithmic}
 
@@ -495,6 +495,81 @@ Some pseudo code:
 
 \section{Question 4}
 
+To calculate the Homography H, we start with the following matrix equation:\\
+\begin{align*}
+\left[
+\begin{matrix}
+a & b & c\\
+d & e & f\\
+h & k & 1
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+x_k\\
+y_k\\
+1
+\end{matrix}
+\right]
+&\cong
+\left[
+\begin{matrix}
+u_k\\
+v_k\\
+1
+\end{matrix}
+\right]\\
+\left[
+\begin{matrix}
+a x_k + b y_k + c\\
+d x_k + e y_k + f\\
+h x_k + k y_k + 1
+\end{matrix}
+\right]
+&\cong
+\left[
+\begin{matrix}
+u_k\\
+v_k\\
+1
+\end{matrix}
+\right]
+\end{align*}
+
+Since these two vectors are homogeneously equivalent, we divide through by the z coordinate to get two equations:\\
+\begin{align*}
+\left[
+\begin{matrix}
+\frac{a x_k + b y_k + c}{h x_k + k y_k + 1}\\
+\frac{d x_k + e y_k + f}{h x_k + k y_k + 1}\\
+1
+\end{matrix}
+\right]
+&=
+\left[
+\begin{matrix}
+u_k\\
+v_k\\
+1
+\end{matrix}
+\right]\\
+a x_k + b y_k + c - u_k (h x_k + k y_k + 1) &= 0\\
+d x_k + e y_k + f - v_k (h x_k + k y_k + 1) &= 0
+\end{align*}
+
+From these two equations, we just plug in $x_k, y_k, u_k, v_k$ and get the following system of equations:
+\begin{align*}
+a 0 + b 0 + c + 4 (h 0 + k 0 + 1) &= 0\\
+d 0 + e 0 + f - 1 (h 0 + k 0 + 1) &= 0\\
+a 1 + b 0 + c + 1.5 (h 1 + k 0 + 1) &= 0 \\
+d 1 + e 0 + f + 0.5 (h 1 + k 0 + 1) &= 0\\
+a 0 + b 1 + c - 0.5 (h 0 + k 1 + 1) &= 0\\
+d 0 + e 1 + f + 0.5 (h 0 + k 1 + 1) &= 0\\
+a 1 + b 1 + c - 0 (h 1 + k 1 + 1) &= 0\\
+d 1 + e 1 + f - 1 (h 1 + k 1 + 1) &= 0
+\end{align*}
+Solving all of these equations, we get $a = 1, b = 3, c = -4, d = -2, e = 0, f = 1, h=1, k=-3$.
 %----------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
