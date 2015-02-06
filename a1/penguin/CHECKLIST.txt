@@ -42,14 +42,14 @@ B. PLACE AN (X) IN FRONT OF PORTIONS OF THE ASSIGNMENT THAT YOU COMPLETED IN
 
 _X_ ( 5 marks) Part 2a  Parts description & drawing
 
-___ (10 marks) Part 2b  Parts transformation description & implementation
+_X_ (10 marks) Part 2b  Parts transformation description & implementation
 
-___ ( 8 marks) Part 2c  Animation control functions description & implementation
+_X_ ( 8 marks) Part 2c  Animation control functions description & implementation
 
 _X_ (15 marks) Part 2d  Hierarchical object rendering
 
 _X_ ( 2 marks) Part 2e  Joint drawing
 
-___ (10 marks) Part 2f  Written report
+_X_ (10 marks) Part 2f  Written report
 
 -------------------------------------------------------------------------------
