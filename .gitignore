@@ -121,4 +121,5 @@ sympy-plots-for-*.tex/
 *.app
 
 # actual executable names
-/a1/penguin/penguin
+penguin
+!penguin/
