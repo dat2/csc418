@@ -169,7 +169,7 @@ void GLPenguin::drawLeg(
         // move the whole leg
         transformStack().translate(x, y);
 
-        // move the leg to the hinge position
+        // move the hinge position
         transformStack().rotateInDegrees(leg_angle);
         transformStack().translate(0, -0.4 * LEG_LENGTH);
 

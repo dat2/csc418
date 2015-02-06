@@ -1,0 +1,43 @@
+================================================================================
+Description of Parts
+================================================================================
+
+The head is constructed of 4 shapes:
+- A pentagonal head
+- A circle for the eye
+- A triangular upper beak
+- A rectangle
+
+The torso is constructed of a hexagon, with the top side vertically extended.
+
+The arm is made of just a single rectangle.
+
+The leg is constructed of 2 rectangles.
+
+================================================================================
+Transformations
+================================================================================
+The head and legs are translated relative to the torso.
+
+The beak and the eye are translated relative to the head.
+
+The foot is translated relative to the leg. Both the foot and the leg's rotation
+point is translated to the end of the rectangle, similarly to the arm. The foot
+is rotated 90 degrees to the leg to start.
+
+The arm isn't translated at all, since it is in the center, but the rotation
+point is translated to the end of the arm rather than the centre.
+
+
+Torso
+= Arm
+= Head
+    = Beak
+    = Eye
+= Leg
+    = Foot
+
+================================================================================
+Design
+================================================================================
+I made a GL penguin class to manage the drawing a bit cleaner
