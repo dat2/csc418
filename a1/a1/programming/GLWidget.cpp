@@ -101,7 +101,7 @@ void GLWidget::timerEvent(QTimerEvent *)
     double leg_rot_t =
         (sin(m_animation_frame * leg_rot_speed) + 1.0) / 2.0;
     m_penguin.m_left_leg_angle = leg_rot_t * LEFT_LEG_MIN + (1 - leg_rot_t) * LEFT_LEG_MAX;
-    m_penguin.m_right_leg_angle = -(leg_rot_t * RIGHT_LEG_MIN + (1 - leg_rot_t) * RIGHT_LEG_MAX);
+    m_penguin.m_right_leg_angle = leg_rot_t * RIGHT_LEG_MIN + (1 - leg_rot_t) * RIGHT_LEG_MAX;
 
     // rotate the feet
     const double foot_rot_speed = 0.1;
