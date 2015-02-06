@@ -29,9 +29,6 @@ const float EYE_RADIUS = 5.0f;
 
 void GLPenguin::draw(void)
 {
-    // Note that successive transformations are applied *before* the previous
-    // ones.
-
     // Push the current transformation matrix on the stack
     transformStack().pushMatrix();
         transformStack().translate(m_x, m_y);
@@ -74,10 +71,8 @@ void GLPenguin::drawArm(void)
             // Move the arm to the joint hinge
             transformStack().rotateInDegrees(m_arm_angle);
 
-            //scale the arm
+            //move the hinge point
             transformStack().scale(ARM_WIDTH, ARM_LENGTH);
-
-            // Move to center location of arm, under previous rotation
             transformStack().translate(0.0, -0.35);
 
             // Draw the square for the arm
@@ -105,6 +100,7 @@ void GLPenguin::drawHead(void)
 
             // draw the upper beak
             transformStack().pushMatrix();
+                // move the beak after moving the hinge point
                 transformStack().translate(0, m_beak_height);
 
                 // move the hinge point
@@ -123,9 +119,8 @@ void GLPenguin::drawHead(void)
 
         // draw head
         transformStack().pushMatrix();
-            //scale the head
-            transformStack().scale(HEAD_WIDTH, HEAD_HEIGHT);
             // move the head a little bit up
+            transformStack().scale(HEAD_WIDTH, HEAD_HEIGHT);
             transformStack().translate(0, 0.9);
 
             m_gl_state.setColor(BLACK);
@@ -142,7 +137,7 @@ void GLPenguin::drawHead(void)
             m_gl_state.setColor(WHITE);
             m_unit_circle.draw();
 
-            // draw the iris
+            // draw the iris (slightly smaller black circle over it)
             transformStack().scale(0.5, 0.5);
             m_gl_state.setColor(BLACK);
             m_unit_circle.draw();
@@ -152,9 +147,11 @@ void GLPenguin::drawHead(void)
     transformStack().popMatrix();
 }
 
+// draw the actual hinge point at the x,y point given
 void GLPenguin::drawHinge()
 {
     transformStack().pushMatrix();
+        // draw the hinge at the JOINT_RADIUS
         transformStack().scale(JOINT_RADIUS, JOINT_RADIUS);
         m_gl_state.setColor(WHITE);
         m_unit_circle.draw();
@@ -211,6 +208,7 @@ void GLPenguin::drawLeg(
     transformStack().popMatrix();
 }
 
+// simply moving the left leg to the left of the body
 void GLPenguin::drawLeftLeg(void)
 {
     drawLeg(
@@ -219,6 +217,7 @@ void GLPenguin::drawLeftLeg(void)
         m_left_leg_angle, m_left_foot_angle);
 }
 
+// simply moving the right leg to the right of the body
 void GLPenguin::drawRightLeg(void)
 {
     drawLeg(

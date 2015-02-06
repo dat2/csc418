@@ -3,20 +3,25 @@ Description of Parts
 ================================================================================
 
 The head is constructed of 4 shapes:
-- A pentagonal head
-- A circle for the eye
-- A triangular upper beak
-- A rectangle
+1. A pentagonal head
+2. A circle for the eye
+3. A triangular upper Beak
+   Note: This is really a triangle, with a rectangle attached to one of the sides.
+4. A rectangle
 
-The torso is constructed of a hexagon, with the top side vertically extended.
+The torso is constructed of a deformed hexagon (which itself is drawn in  with 6
+triangles) with the top side vertically extended.
 
 The arm is made of just a single rectangle.
 
-The leg is constructed of 2 rectangles.
+The leg is constructed of 2 rectangles. The foot is at the bottom of the leg,
+with the rotation point at the end of the foot, and the foot attached to the end
+of the leg.
 
 ================================================================================
 Transformations
 ================================================================================
+
 The head and legs are translated relative to the torso.
 
 The beak and the eye are translated relative to the head.
@@ -29,15 +34,33 @@ The arm isn't translated at all, since it is in the center, but the rotation
 point is translated to the end of the arm rather than the centre.
 
 
+Here is the kinematic tree visually (each = means a child of the above)
 Torso
-= Arm
-= Head
-    = Beak
-    = Eye
-= Leg
-    = Foot
+    = Arm
+    = Head
+        = Beak
+        = Eye
+    = Leg
+        = Foot
+
+================================================================================
+Animation
+================================================================================
+
+The animation I created is very simple. The legs rotate left and right, the feet
+rotate up and down. The arm rotates left and right, the head rotates left and
+right as well. The beak moves up and down while the entire penguin moves all the
+way to the left and all the way to the right, while also moving up and down. It
+does not make much sense physically, but it shows that all the degrees of freedom
+are truly free.
+
 
 ================================================================================
 Design
 ================================================================================
-I made a GL penguin class to manage the drawing a bit cleaner
+
+I created a GLPenguin.h and a GLPenguin.c file that encompasses the drawing of
+the penguin. In GLWidget.cpp, there is a single call to GLPenguin.draw(), which
+does all the hard work. GLPenguin splits the actual drawing into a few slightly
+smaller functions so that it is easier to understand which code does what. The
+Makefile has been modified to account for this as well.

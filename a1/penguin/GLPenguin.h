@@ -4,6 +4,7 @@
 #include "GLBaseShapes.h"
 #include "GLState.h"
 
+// this class manages the angles of the penguin, and the shapes it must draw
 class GLPenguin
 {
 public:
@@ -33,7 +34,7 @@ public:
 
     void draw(void);
 
-    // its easier this way since glwidget owns this
+    // glwidget owns this, so its fine to make these public
     double m_head_angle;
     double m_arm_angle;
     double m_left_leg_angle;
@@ -47,6 +48,7 @@ public:
     double m_beak_height;
 
 private:
+    // copied to keep the code the same
     GLTransformStack &transformStack()
     { return m_gl_state.transformStack(); }
 
