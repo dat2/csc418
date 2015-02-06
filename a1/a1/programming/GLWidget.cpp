@@ -77,12 +77,6 @@ void GLWidget::timerEvent(QTimerEvent *)
     m_animation_frame++;
 
     // Update joint angles.
-    const double arm_rot_speed = 0.1;
-    double arm_rot_t =
-        (sin(m_animation_frame * arm_rot_speed) + 1.0) / 2.0;
-    m_penguin.m_arm_angle = arm_rot_t * ARM_MIN + (1 - arm_rot_t) * ARM_MAX;
-
-    // m_penguin.m_head_angle = interpolated_rot;
 
     //////////////////////////////////////////////////////////////////////////
     // TODO:
@@ -90,6 +84,48 @@ void GLWidget::timerEvent(QTimerEvent *)
     //   Note: Nothing should be drawn in this function!
     //////////////////////////////////////////////////////////////////////////
 
+    // rotate the arm
+    const double arm_rot_speed = 0.06;
+    double arm_rot_t =
+        (sin(m_animation_frame * arm_rot_speed) + 1.0) / 2.0;
+    m_penguin.m_arm_angle = arm_rot_t * ARM_MIN + (1 - arm_rot_t) * ARM_MAX;
+
+    // rotate the head
+    const double head_rot_speed = 0.1;
+    double head_rot_t =
+        (sin(m_animation_frame * head_rot_speed) + 1.0) / 2.0;
+    m_penguin.m_head_angle = head_rot_t * HEAD_MIN + (1 - head_rot_t) * HEAD_MAX;
+
+    // rotate the legs
+    const double leg_rot_speed = 0.05;
+    double leg_rot_t =
+        (sin(m_animation_frame * leg_rot_speed) + 1.0) / 2.0;
+    m_penguin.m_left_leg_angle = leg_rot_t * LEFT_LEG_MIN + (1 - leg_rot_t) * LEFT_LEG_MAX;
+    m_penguin.m_right_leg_angle = -(leg_rot_t * RIGHT_LEG_MIN + (1 - leg_rot_t) * RIGHT_LEG_MAX);
+
+    // rotate the feet
+    const double foot_rot_speed = 0.1;
+    double foot_rot_t =
+        (sin(m_animation_frame * foot_rot_speed) + 1.0) / 2.0;
+    m_penguin.m_left_foot_angle = foot_rot_t * LEFT_FOOT_MIN + (1 - foot_rot_t) * LEFT_FOOT_MAX;
+    m_penguin.m_right_foot_angle = foot_rot_t * RIGHT_FOOT_MIN + (1 - foot_rot_t) * RIGHT_FOOT_MAX;
+
+    // move the beak up and down
+    const double beak_movement_speed = 0.1;
+    double beak_move_t =
+        (sin(m_animation_frame * beak_movement_speed) + 1.0) / 2.0;
+    m_penguin.m_beak_height = beak_move_t * BEAK_MIN + (1 - beak_move_t) * BEAK_MAX;
+
+    // move x and y
+    const double x_speed = 0.02;
+    const double y_speed = 0.05;
+    double x_move_t =
+        (sin(m_animation_frame * x_speed) + 1.0) / 2.0;
+    double y_move_t =
+        (sin(m_animation_frame * y_speed) + 1.0) / 2.0;
+
+    m_penguin.m_x = x_move_t * X_MIN + (1 - x_move_t) * X_MAX;
+    m_penguin.m_y = y_move_t * Y_MIN + (1 - y_move_t) * Y_MAX;
     // Tell this widget to redraw itself.
     update();
 }
