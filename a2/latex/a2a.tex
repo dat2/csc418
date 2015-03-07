@@ -78,7 +78,7 @@ Given that $\vec{e} = (1,2,2)$ $\vec{g} =(1,1,3)$ and $\vec{r}=(0,1,0)$, $\vec{s
 \begin{align*}
 \vec{s}&=-\frac{\vec{g}}{\| \vec{g} \|} = \left(-\frac{1}{\sqrt{11}},-\frac{1}{\sqrt{11}},-\frac{3}{\sqrt{11}} \right) \\
 \vec{u}&=\frac{\vec{r} \times \vec{s}}{\|\vec{r} \times \vec{s}\|} = \left(-\frac{1}{\sqrt{5}},0,\frac{1}{\sqrt{5}} \right)\\
-\vec{v}&=\frac{\vec{s} \times \vec{u}}{\|\vec{s} \times \vec{u}\|} = \left(-\frac{1}{3\sqrt{2}},-\frac{4}{3\sqrt{2}},-\frac{1}{3\sqrt{2}} \right) 
+\vec{v}&=\frac{\vec{s} \times \vec{u}}{\|\vec{s} \times \vec{u}\|} = \left(-\frac{1}{3\sqrt{2}},-\frac{4}{3\sqrt{2}},-\frac{1}{3\sqrt{2}} \right)
 \end{align*}
 
 From here, we can calculate the world to camera transformation matrix as follows:
@@ -110,186 +110,159 @@ s_x & s_y & s_z & \vec{s} \cdot \vec{e} \\
 First lets calculate $m$ then project it to $m'$.
 \begin{align*}
 m &= \frac{1}{2} \left(p+q\right)=\frac{1}{2}\left(
-\left[
-\begin{matrix}
+\begin{bmatrix}
 p_x\\
 p_y\\
 p_z\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 +
-\left[
-\begin{matrix}
+\begin{bmatrix}
 q_x\\
 q_y\\
 q_z\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 \right)
-= \left[\begin{matrix}
+= \begin{bmatrix}
 \frac{1}{2}(p_x + q_x)\\
 \frac{1}{2}(p_y + q_y)\\
 \frac{1}{2}(p_z + q_z)\\
 1
-\end{matrix}
-\right]\\
-m' &= 
-\left[
-\begin{matrix}
+\end{bmatrix}\\
+m' &=
+\begin{bmatrix}
 1 & 0 & 0 & 0\\
 0 & 1 & 0 & 0\\
 0 & 0 & 1 & 0\\
 0 & 0 & -\frac{1}{f} & 0\\
-\end{matrix}
-\right]
+\end{bmatrix}
 \cdot
-\left[\begin{matrix}
+\begin{bmatrix}
 \frac{1}{2}(p_x + q_x)\\
 \frac{1}{2}(p_y + q_y)\\
 \frac{1}{2}(p_z + q_z)\\
 1
-\end{matrix}
-\right]
-\cong \left[\begin{matrix}
+\end{bmatrix}
+\cong \begin{bmatrix}
 -f\left(\frac{p_x + q_x}{p_z + q_z}\right)\\
 -f\left(\frac{p_y + q_y}{p_z + q_z}\right)\\
 -f\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 \end{align*}
 
 
 Next lets calculate $p'$ and $q'$ then calculate the midpoint between them.
 \begin{align*}
 p' &=
-\left[
-\begin{matrix}
+\begin{bmatrix}
 1 & 0 & 0 & 0\\
 0 & 1 & 0 & 0\\
 0 & 0 & 1 & 0\\
 0 & 0 & -\frac{1}{f} & 0\\
-\end{matrix}
-\right]
+\end{bmatrix}
 \cdot
-\left[\begin{matrix}
+\begin{bmatrix}
 p_x\\
 p_y\\
 p_z\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 \cong
-\left[\begin{matrix}
+\begin{bmatrix}
 -f\frac{p_x}{p_z}\\
 -f\frac{p_y}{p_z}\\
 -f\\
 1
-\end{matrix}
-\right]\\
+\end{bmatrix}\\
 &\text{$q'$ is calculated similarly.}\\
-\frac{1}{2}\left(p'+q'\right) &= 
+\frac{1}{2}\left(p'+q'\right) &=
 \frac{1}{2}
 \left(
-\left[\begin{matrix}
+\begin{bmatrix}
 -f\frac{p_x}{p_z}\\
 -f\frac{p_y}{p_z}\\
 -f\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 +
-\left[\begin{matrix}
+\begin{bmatrix}
 -f\frac{q_x}{q_z}\\
 -f\frac{q_y}{q_z}\\
 -f\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 \right)
 \cong
-\left[\begin{matrix}
+\begin{bmatrix}
 -\frac{f}{2}\left(\frac{p_x}{p_z} + \frac{q_x}{q_z}\right)\\
 -\frac{f}{2}\left(\frac{p_y}{p_z} + \frac{q_y}{q_z}\right)\\
 -f\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 \end{align*}
 In order for $m' = \frac{1}{2}(p'+q')$, we need $-f\left(\frac{p_x + q_x}{p_z + q_z}\right) = -\frac{f}{2}\left(\frac{p_x}{p_z} + \frac{q_x}{q_z}\right)$ and $-f\left(\frac{p_y + q_y}{p_z + q_z}\right) = -\frac{f}{2}\left(\frac{p_y}{p_z} + \frac{q_y}{q_z}\right)$. There's only one case where this is true, and it is when $p_z = q_z$.
 \\
 If we instead use an orthographic projection, then $m' = \frac{1}{2}(p'+q')$ for all cases:
 \begin{align*}
-m' &= 
-\left[
-\begin{matrix}
+m' &=
+\begin{bmatrix}
 1 & 0 & 0 & 0\\
 0 & 1 & 0 & 0\\
 0 & 0 & 0 & 1\\
-\end{matrix}
-\right]
+\end{bmatrix}
 \cdot
-\left[\begin{matrix}
+\begin{bmatrix}
 \frac{1}{2}(p_x + q_x)\\
 \frac{1}{2}(p_y + q_y)\\
 \frac{1}{2}(p_z + q_z)\\
 1
-\end{matrix}
-\right]
-= 
-\left[\begin{matrix}
+\end{bmatrix}
+=
+\begin{bmatrix}
 \frac{1}{2}(p_x + q_x)\\
 \frac{1}{2}(p_y + q_y)\\
 1
-\end{matrix}
-\right]\\
-p' &= 
-\left[
-\begin{matrix}
+\end{bmatrix}\\
+p' &=
+\begin{bmatrix}
 1 & 0 & 0 & 0\\
 0 & 1 & 0 & 0\\
 0 & 0 & 0 & 1\\
-\end{matrix}
-\right]
+\end{bmatrix}
 \cdot
-\left[\begin{matrix}
+\begin{bmatrix}
 p_x\\
 p_y\\
 p_z\\
 1
-\end{matrix}
-\right] = \left[\begin{matrix}
+\end{bmatrix} = \begin{bmatrix}
 p_x\\
 p_y\\
 1
-\end{matrix}
-\right]\\
+\end{bmatrix}\\
 \frac{1}{2}\left(p' + q'\right) &=
 \frac{1}{2}
 \left(
-\left[\begin{matrix}
+\begin{bmatrix}
 p_x\\
 p_y\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 +
-\left[\begin{matrix}
+\begin{bmatrix}
 q_x\\
 q_y\\
 1
-\end{matrix}
-\right]
+\end{bmatrix}
 \right)\\
 &=
-\left[\begin{matrix}
+\begin{bmatrix}
 \frac{1}{2}(p_x + q_x)\\
 \frac{1}{2}(p_y + q_y)\\
 1
-\end{matrix}
-\right]= m'
+\end{bmatrix}= m'
 \end{align*}
 
 %----------------------------------------------------------------------------------------
@@ -298,6 +271,72 @@ q_y\\
 \newpage
 \section{Question 3}
 
+The projected lines have the following form
+\begin{align*}
+l_i(u_i)' =
+\begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & \frac{1}{f} & 0\\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+p_{ix} + u_i d_{ix}\\
+p_{iy} + u_i d_{iy}\\
+p_{iz} + u_i d_{iz}\\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+p_{ix} + u_i d_{ix}\\
+p_{iy} + u_i d_{iy}\\
+p_{iz} + u_i d_{iz}\\
+\frac{1}{f} \left(p_{iz} + u_i d_{iz}\right)
+\end{bmatrix}
+\cong
+\begin{bmatrix}
+f\frac{p_{ix} + u_i d_{ix}}{p_{iz} + u_i d_{iz}}\\
+f\frac{p_{iy} + u_i d_{iy}}{p_{iz} + u_i d_{iz}}\\
+f\\
+1
+\end{bmatrix}
+\end{align*}
+
+The projection of each line will intersect in the canonical view space, so the final expression is independent of the original lines. However, since the original lines never intersect in camera space, the point of intersection is at $u_i = \pm\infty$. Therefore, we must take the limit of $l_i'(u_i)$ as $u_i \to \pm \infty$.
+\begin{align*}
+\lim_{u_i \to \pm \infty} l_i(u_i) &=
+\lim_{u_i \to \pm \infty}  \begin{bmatrix}
+f\frac{p_{ix} + u_i d_{ix}}{p_{iz} + u_i d_{iz}}\\
+f\frac{p_{iy} + u_i d_{iy}}{p_{iz} + u_i d_{iz}}\\
+f\\
+1
+\end{bmatrix}
+= \begin{bmatrix}
+\lim_{u_i \to \pm \infty} f\frac{p_{ix} + u_i d_{ix}}{p_{iz} + u_i d_{iz}}\\
+\lim_{u_i \to \pm \infty} f\frac{p_{iy} + u_i d_{iy}}{p_{iz} + u_i d_{iz}}\\
+f\\
+1
+\end{bmatrix}\\
+&= \begin{bmatrix}
+\lim_{u_i \to \pm \infty} f\frac{p_{ix} + u_i d_{ix}}{\frac{p_{iz}}{u_i} + d_{iz}}\\
+\lim_{u_i \to \pm \infty} f\frac{p_{iy} + u_i d_{iy}}{\frac{p_{iz}}{u_i} + d_{iz}}\\
+f\\
+1
+\end{bmatrix}
+= \begin{bmatrix}
+\lim_{u_i \to \pm \infty} f\frac{\frac{p_{ix}}{u_i} + d_{ix}}{\frac{p_{iz}}{u_i} + d_{iz}}\\
+\lim_{u_i \to \pm \infty} f\frac{\frac{p_{iy}}{u_i} + d_{iy}}{\frac{p_{iz}}{u_i} + d_{iz}}\\
+f\\
+1
+\end{bmatrix}\\
+&= \begin{bmatrix}
+f\frac{d_{ix}}{d_{iz}}\\
+f\frac{d_{iy}}{d_{iz}}\\
+f\\
+1
+\end{bmatrix}
+\end{align*}
 %----------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
@@ -308,69 +347,55 @@ q_y\\
 \section{Question 4}
 The canonical view transform using $L=-1, R = 1, B = -1, T = 1, f = 1, F=1001$ is this:
 \begin{align*}
-M_{cv} &= 
-\left[
-\begin{matrix}
+M_{cv} &=
+\begin{bmatrix}
 \frac{2f}{L-R} & 0 & \frac{R + L}{L - R} & 0\\
 0 & \frac{2f}{B-T} & \frac{B + T}{B - T} & 0\\
 0 & 0 & \frac{f + F}{F - f} & \frac{2Ff}{F - f}\\
 0 & 0 & -\frac{1}{f} & 0\\
-\end{matrix}
-\right]
-= \left[
-\begin{matrix}
+\end{bmatrix}
+= \begin{bmatrix}
 \frac{2}{-1-1} & 0 & \frac{1 + -1}{-1 - 1} & 0\\
 0 & \frac{2}{-1-1} & \frac{-1 + 1}{-1 - 1} & 0\\
 0 & 0 & \frac{1 + 1001}{1001 - 1} & \frac{2(1001)}{1001 - 1}\\
 0 & 0 & -\frac{1}{f} & 0\\
-\end{matrix}
-\right]
+\end{bmatrix}
 =
-\left[
-\begin{matrix}
+\begin{bmatrix}
 -1 & 0 & 0 & 0\\
 0 & -1 & 0 & 0\\
 0 & 0 & 1.002 & 2.002\\
 0 & 0 & -1 & 0\\
-\end{matrix}
-\right]\\
+\end{bmatrix}\\
 &\text{Now transforming a point from camera space to canonical view space:}\\
-\left[
-\begin{matrix}
+\begin{bmatrix}
 x_v\\
 y_v\\
 z_v\\
 1\\
-\end{matrix}
-\right]
-&= M_{cv} \left[
-\begin{matrix}
+\end{bmatrix}
+&= M_{cv} \begin{bmatrix}
 x_c\\
 y_c\\
 z_c\\
 1\\
-\end{matrix}
-\right]
-= \left[
-\begin{matrix}
+\end{bmatrix}
+= \begin{bmatrix}
 -x_c\\
 -y_c\\
 1.002 z_c + 2.002\\
 z_c\\
-\end{matrix}
-\right]
+\end{bmatrix}
 \cong
-\left[
-\begin{matrix}
+\begin{bmatrix}
 -\frac{x_c}{z_c}\\
 -\frac{y_c}{z_c}\\
 1.002 + \frac{2.002}{z_c}\\
 1\\
-\end{matrix}
-\right]
+\end{bmatrix}
 \end{align*}
 Since we are only interested in the pseudo depth value here, we now have a formula for the pseudo depth of each point.
-$z_{c1}=-1, z_{c2}=-10, z_{c3} = -100, z_{c4} = -1000$ 
+$z_{c1}=-1, z_{c2}=-10, z_{c3} = -100, z_{c4} = -1000$
 \begin{align*}
 z_{v1} &= 1.002 + \frac{2.002}{z_{c1}} = -1\\
 z_{v2} &= 1.002 + \frac{2.002}{z_{c2}} = 0.8018\\
