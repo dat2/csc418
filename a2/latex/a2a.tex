@@ -306,6 +306,79 @@ q_y\\
 
 \newpage
 \section{Question 4}
+The canonical view transform using $L=-1, R = 1, B = -1, T = 1, f = 1, F=1001$ is this:
+\begin{align*}
+M_{cv} &= 
+\left[
+\begin{matrix}
+\frac{2f}{L-R} & 0 & \frac{R + L}{L - R} & 0\\
+0 & \frac{2f}{B-T} & \frac{B + T}{B - T} & 0\\
+0 & 0 & \frac{f + F}{F - f} & \frac{2Ff}{F - f}\\
+0 & 0 & -\frac{1}{f} & 0\\
+\end{matrix}
+\right]
+= \left[
+\begin{matrix}
+\frac{2}{-1-1} & 0 & \frac{1 + -1}{-1 - 1} & 0\\
+0 & \frac{2}{-1-1} & \frac{-1 + 1}{-1 - 1} & 0\\
+0 & 0 & \frac{1 + 1001}{1001 - 1} & \frac{2(1001)}{1001 - 1}\\
+0 & 0 & -\frac{1}{f} & 0\\
+\end{matrix}
+\right]
+=
+\left[
+\begin{matrix}
+-1 & 0 & 0 & 0\\
+0 & -1 & 0 & 0\\
+0 & 0 & 1.002 & 2.002\\
+0 & 0 & -1 & 0\\
+\end{matrix}
+\right]\\
+&\text{Now transforming a point from camera space to canonical view space:}\\
+\left[
+\begin{matrix}
+x_v\\
+y_v\\
+z_v\\
+1\\
+\end{matrix}
+\right]
+&= M_{cv} \left[
+\begin{matrix}
+x_c\\
+y_c\\
+z_c\\
+1\\
+\end{matrix}
+\right]
+= \left[
+\begin{matrix}
+-x_c\\
+-y_c\\
+1.002 z_c + 2.002\\
+z_c\\
+\end{matrix}
+\right]
+\cong
+\left[
+\begin{matrix}
+-\frac{x_c}{z_c}\\
+-\frac{y_c}{z_c}\\
+1.002 + \frac{2.002}{z_c}\\
+1\\
+\end{matrix}
+\right]
+\end{align*}
+Since we are only interested in the pseudo depth value here, we now have a formula for the pseudo depth of each point.
+$z_{c1}=-1, z_{c2}=-10, z_{c3} = -100, z_{c4} = -1000$ 
+\begin{align*}
+z_{v1} &= 1.002 + \frac{2.002}{z_{c1}} = -1\\
+z_{v2} &= 1.002 + \frac{2.002}{z_{c2}} = 0.8018\\
+z_{v3} &= 1.002 + \frac{2.002}{z_{c3}} = 0.98198\\
+z_{v4} &= 1.002 + \frac{2.002}{z_{c4}} = 0.999998\\
+\end{align*}
+
+The relationship is not linear. Plot $z_{ci}$ and $z_{vi}$ on a graph and calculate slopes between each pair of points $(-1, -1), (-10, 0.8018), (-100, 0.98198), (-1000, 0.999998)$ and the slopes between each point should be the same if the relationship is linear. However, the slopes are different between each point so therefore the relationship is not linear.
 %----------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
