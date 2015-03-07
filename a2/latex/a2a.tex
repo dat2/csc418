@@ -1,0 +1,586 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath} % Math packages
+\usepackage{enumerate}
+\usepackage{algpseudocode}
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+
+\allowdisplaybreaks
+
+% Margins
+\topmargin=-0.8in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.5in
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{
+\normalfont \normalsize
+\textsc{University of Toronto} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge CSC418 Assignment 1 Part A \\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Nicholas Dujay\\999194900} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 1
+%----------------------------------------------------------------------------------------
+
+\section{Question 1}
+Given that $\vec{e} = (1,2,2)$ $\vec{g} =(1,1,3)$ and $\vec{r}=(0,1,0)$, $\vec{s}$ $\vec{u}$ and $\vec{v}$ are calculated like this:
+
+\begin{align*}
+\vec{s}&=-\frac{\vec{g}}{\| \vec{g} \|} = \left(-\frac{1}{\sqrt{11}},-\frac{1}{\sqrt{11}},-\frac{3}{\sqrt{11}} \right) \\
+\vec{u}&=\frac{\vec{r} \times \vec{s}}{\|\vec{r} \times \vec{s}\|} = \left(-\frac{1}{\sqrt{5}},0,\frac{1}{\sqrt{5}} \right)\\
+\vec{v}&=\frac{\vec{s} \times \vec{u}}{\|\vec{s} \times \vec{u}\|} = \left(-\frac{1}{3\sqrt{2}},-\frac{4}{3\sqrt{2}},-\frac{1}{3\sqrt{2}} \right) 
+\end{align*}
+
+From here, we can calculate the world to camera transformation matrix as follows:
+\begin{align*}
+M_{wc} &= \left[
+\begin{array}{ccc|c}
+-\frac{1}{\sqrt{5}} & 0 & \frac{1}{\sqrt{5}} & -\frac{1}{\sqrt{5}}\\
+\frac{1}{3\sqrt{2}} & -\frac{4}{3\sqrt{2}} & -\frac{1}{3\sqrt{2}} & \frac{11}{3\sqrt{2}}\\
+-\frac{1}{\sqrt{11}} & -\frac{1}{\sqrt{11}} & -\frac{3}{\sqrt{11}} & \frac{9}{\sqrt{11}}\\
+0 & 0 & 0 & 1
+\end{array}
+\right]\\
+&\text{Where the $M_{wc}$ matrix has the following form:}\\
+M_{wc} &= \left[
+\begin{array}{ccc|c}
+u_x & u_y & u_z & \vec{u} \cdot \vec{e} \\
+v_x & v_y & v_z & \vec{v} \cdot \vec{e} \\
+s_x & s_y & s_z & \vec{s} \cdot \vec{e} \\
+0 & 0 & 0 & 1
+\end{array}
+\right]
+\end{align*}
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 2
+%----------------------------------------------------------------------------------------
+
+\section{Question 2}
+First lets calculate $m$ then project it to $m'$.
+\begin{align*}
+m &= \frac{1}{2} \left(p+q\right)=\frac{1}{2}\left(
+\left[
+\begin{matrix}
+p_x\\
+p_y\\
+p_z\\
+1
+\end{matrix}
+\right]
++
+\left[
+\begin{matrix}
+q_x\\
+q_y\\
+q_z\\
+1
+\end{matrix}
+\right]
+\right)
+= \left[\begin{matrix}
+\frac{1}{2}(p_x + q_x)\\
+\frac{1}{2}(p_y + q_y)\\
+\frac{1}{2}(p_z + q_z)\\
+1
+\end{matrix}
+\right]\\
+m' &= 
+\left[
+\begin{matrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & -f & 0\\
+\end{matrix}
+\right]
+\cdot
+\left[\begin{matrix}
+\frac{1}{2}(p_x + q_x)\\
+\frac{1}{2}(p_y + q_y)\\
+\frac{1}{2}(p_z + q_z)\\
+1
+\end{matrix}
+\right]
+\cong \left[\begin{matrix}
+-\frac{1}{f}\left(\frac{p_x + q_x}{p_z + q_z}\right)\\
+-\frac{1}{f}\left(\frac{p_y + q_y}{p_z + q_z}\right)\\
+-\frac{1}{f}\\
+1
+\end{matrix}
+\right]
+\end{align*}
+
+
+Next lets calculate $p'$ and $q'$ then calculate the midpoint between them.
+\begin{align*}
+p' &=
+\left[
+\begin{matrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & -f & 0\\
+\end{matrix}
+\right]
+\cdot
+\left[\begin{matrix}
+p_x\\
+p_y\\
+p_z\\
+1
+\end{matrix}
+\right]
+\cong
+\left[\begin{matrix}
+-\frac{p_x}{p_z f}\\
+-\frac{p_y}{p_z f}\\
+-\frac{1}{f}\\
+1
+\end{matrix}
+\right]\\
+&\text{$q'$ is calculated similarly.}\\
+\frac{1}{2}\left(p'+q'\right) &= 
+\frac{1}{2}
+\left(
+\left[\begin{matrix}
+-\frac{p_x}{p_z f}\\
+-\frac{p_y}{p_z f}\\
+-\frac{1}{f}\\
+1
+\end{matrix}
+\right]
++
+\left[\begin{matrix}
+-\frac{q_x}{q_z f}\\
+-\frac{q_y}{q_z f}\\
+-\frac{1}{f}\\
+1
+\end{matrix}
+\right]
+\right)
+\cong
+\left[\begin{matrix}
+-\frac{1}{2f}\left(\frac{p_x}{p_z} + \frac{q_x}{q_z}\right)\\
+-\frac{1}{2f}\left(\frac{p_y}{p_z} + \frac{q_y}{q_z}\right)\\
+-\frac{1}{f}\\
+1
+\end{matrix}
+\right]
+\end{align*}
+
+Therefore, $m' \neq \frac{1}{2}(p'+q')$ for this projection. However, if we use an orthographic projection, then $m' = \frac{1}{2}(p'+q')$:
+
+\begin{align*}
+m' &= 
+\left[
+\begin{matrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1\\
+\end{matrix}
+\right]
+\cdot
+\left[\begin{matrix}
+\frac{1}{2}(p_x + q_x)\\
+\frac{1}{2}(p_y + q_y)\\
+\frac{1}{2}(p_z + q_z)\\
+1
+\end{matrix}
+\right]
+= 
+\left[\begin{matrix}
+\frac{1}{2}(p_x + q_x)\\
+\frac{1}{2}(p_y + q_y)\\
+1
+\end{matrix}
+\right]\\
+p' &= 
+\left[
+\begin{matrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1\\
+\end{matrix}
+\right]
+\cdot
+\left[\begin{matrix}
+p_x\\
+p_y\\
+p_z\\
+1
+\end{matrix}
+\right] = \left[\begin{matrix}
+p_x\\
+p_y\\
+1
+\end{matrix}
+\right]\\
+\frac{1}{2}\left(p' + q'\right) &=
+\frac{1}{2}
+\left(
+\left[\begin{matrix}
+p_x\\
+p_y\\
+1
+\end{matrix}
+\right]
++
+\left[\begin{matrix}
+q_x\\
+q_y\\
+1
+\end{matrix}
+\right]
+\right)\\
+&=
+\left[\begin{matrix}
+\frac{1}{2}(p_x + q_x)\\
+\frac{1}{2}(p_y + q_y)\\
+1
+\end{matrix}
+\right]= m'
+\end{align*}
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 3
+%----------------------------------------------------------------------------------------
+
+\section{Question 3}
+
+\begin{enumerate}[a)]
+
+%----------------------------------------------------------------------------------------
+% part a
+%----------------------------------------------------------------------------------------
+\item
+
+First, we get the direction vector from $\vec{p}_i$ to $\vec{p}_{i+1}$: $(x_{i+1} - x_i, y_{i+1} - y_i)$. Then, since the inward facing normal is a 90 degree counter clockwise rotation of this vector, the result is $(y_i - y_{i+1}, x_{i+1} - x_i)$.
+
+Counter clockwise rotation:
+\begin{align*}
+\left[
+\begin{matrix}
+cos(90) & -sin(90)\\
+sin(90) & cos(90)
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+x\\
+y
+\end{matrix}
+\right] = \left[
+\begin{matrix}
+0 & -1\\
+1 & 0
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+x\\
+y
+\end{matrix}
+\right] = \left[
+\begin{matrix}
+-y\\
+x
+\end{matrix}
+\right]
+\end{align*}
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+% part b
+%----------------------------------------------------------------------------------------
+\item
+Let $d_q$ be a vector from $q$ to $p_i$, ie $d_q = p_i - q$. The following function tells you if the point is on the inward facing line:
+\[
+sameside(q, p_i, n_i) =
+\begin{cases}
+true & \text{if } d_q \cdot n_i > 0\\
+false & \text{if } d_q \cdot n_i \leq 0
+\end{cases}
+\]
+
+If the angle between $d_q$ and $n_i$ is less than 90 degrees, we know $q$ is on the inward side. Since $\forall \theta \in [0,90) \cdot cos(\theta) > 0$, then the dot product between $d_q$ and $n_i$ is positive if $q$ is on the inward side, and negative if $q$ is on the outward side.
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+% part c
+%----------------------------------------------------------------------------------------
+\item
+
+The algorithm will use the above two parts to the question to solve this. The high level steps are the following:
+
+\begin{enumerate}[i)]
+\item For each pair of points $(p_i, p_{i+1})$ calculate the \textbf{inward facing normal} $n_{p_i}$.
+\item For each pair of points $(r_i, r_{i+1})$ calculate the \textbf{outward facing normal} $n_{r_i}$. Note: in the actual implementation, we can just reverse the order of points $(r_{i+1}, r_i)$ and calculate the inward facing normal.
+\item For all of the above normals, ensure that \textbf{sameside} (from part b) is true for the point.
+\end{enumerate}
+
+Some pseudo code:
+\begin{algorithmic}
+\Function{normal}{$p_{i+1}$, $p_i$}
+\State \Return ($y_i - y_{i+1}$, $x_{i+1} - x_i$)
+\EndFunction
+\State
+\Function{InConvexPolgyon}{point}
+\ForAll{$p_i, p_{i+1}$ in the outer polygon} \Comment{check if the point is inside the outer polygon}
+\If{not sameside(point, $p_i$, \Call{Normal}{$p_{i+1}$,$p_i$})}
+\State \Return False
+\EndIf
+\EndFor
+
+\ForAll{$r_j, r_{j+1}$ in the inner polygon} \Comment{check if the point is outside the inner polygon}
+\If{not sameside(point, $r_i$, \Call{Normal}{$r_j$,$r_{j+1}$})}
+\State \Return False \Comment{reversing the order gives you an outward facing normal here}
+\EndIf
+\EndFor
+\State \Return True
+\EndFunction
+\end{algorithmic}
+
+%----------------------------------------------------------------------------------------
+
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 4
+%----------------------------------------------------------------------------------------
+
+\section{Question 4}
+
+To calculate the Homography H, we start with the following matrix equation:\\
+\begin{align*}
+\left[
+\begin{matrix}
+a & b & c\\
+d & e & f\\
+h & k & 1
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+x_k\\
+y_k\\
+1
+\end{matrix}
+\right]
+&\cong
+\left[
+\begin{matrix}
+u_k\\
+v_k\\
+1
+\end{matrix}
+\right]\\
+\left[
+\begin{matrix}
+a x_k + b y_k + c\\
+d x_k + e y_k + f\\
+h x_k + k y_k + 1
+\end{matrix}
+\right]
+&\cong
+\left[
+\begin{matrix}
+u_k\\
+v_k\\
+1
+\end{matrix}
+\right]
+\end{align*}
+
+Since these two vectors are homogeneously equivalent, we divide through by the z coordinate to get two equations:\\
+\begin{align*}
+\left[
+\begin{matrix}
+\frac{a x_k + b y_k + c}{h x_k + k y_k + 1}\\
+\frac{d x_k + e y_k + f}{h x_k + k y_k + 1}\\
+1
+\end{matrix}
+\right]
+&=
+\left[
+\begin{matrix}
+u_k\\
+v_k\\
+1
+\end{matrix}
+\right]\\
+a x_k + b y_k + c - u_k (h x_k + k y_k + 1) &= 0\\
+d x_k + e y_k + f - v_k (h x_k + k y_k + 1) &= 0
+\end{align*}
+
+From these two equations, we just plug in $x_k, y_k, u_k, v_k$ and get the following system of equations:
+\begin{align*}
+a 0 + b 0 + c + 4 (h 0 + k 0 + 1) &= 0\\
+d 0 + e 0 + f - 1 (h 0 + k 0 + 1) &= 0\\
+a 1 + b 0 + c + 1.5 (h 1 + k 0 + 1) &= 0 \\
+d 1 + e 0 + f + 0.5 (h 1 + k 0 + 1) &= 0\\
+a 0 + b 1 + c - 0.5 (h 0 + k 1 + 1) &= 0\\
+d 0 + e 1 + f + 0.5 (h 0 + k 1 + 1) &= 0\\
+a 1 + b 1 + c - 0 (h 1 + k 1 + 1) &= 0\\
+d 1 + e 1 + f - 1 (h 1 + k 1 + 1) &= 0
+\end{align*}
+Solving all of these equations, we get $a = 1, b = 3, c = -4, d = -2, e = 0, f = 1, h=1, k=-3$.
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 5
+%----------------------------------------------------------------------------------------
+
+\section{Question 5}
+
+First, lets express the transformation as a translation and then followed by a scale and finally followed by a rotation. Let the given matrix $ \left[
+\begin{matrix}
+8 & 3 & -7\\
+6 & -4 & -24\\
+0 & 0 & 1
+\end{matrix}
+\right]$ be $A$,
+Let $R(\theta)$ be the rotation matrix, $S(s_x, s_y)$ be the non uniform scale matrix, $T(t_x, t_y)$ be the translation matrix.
+\begin{align*}
+R(\theta) \cdot S(s_x, s_y) \cdot T(t_x, t_y) &=
+R(\theta) \cdot S(s_x, s_y) \cdot
+\left[
+\begin{matrix}
+1 & 0 & t_x\\
+0 & 1 & t_y\\
+0 & 0 & 1
+\end{matrix}
+\right]\\
+&=
+R(\theta) \cdot
+\left[
+\begin{matrix}
+s_x & 0 & 0\\
+0 & s_y & 0\\
+0 & 0 & 1
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+1 & 0 & t_x\\
+0 & 1 & t_y\\
+0 & 0 & 1
+\end{matrix}
+\right]\\
+&=
+R(\theta) \cdot
+\left[
+\begin{matrix}
+s_x & 0 & s_x t_x\\
+0 & s_y & s_y t_y\\
+0 & 0 & 1
+\end{matrix}
+\right]\\
+&= \left[
+\begin{matrix}
+cos(\theta) & -sin(\theta) & 0\\
+sin(\theta) & cos(\theta) & 0\\
+0 & 0 & 1
+\end{matrix}
+\right]
+\cdot
+\left[
+\begin{matrix}
+s_x & 0 & s_x t_x\\
+0 & s_y & s_y t_y\\
+0 & 0 & 1
+\end{matrix}
+\right]\\
+&= \left[
+\begin{matrix}
+s_x cos(\theta) & - s_y sin(\theta) & s_x cos(\theta) t_x - s_y sin(\theta) t_y\\
+s_x sin(\theta) & s_y cos(\theta) & s_x sin(\theta) t_x + s_y cos(\theta) t_y\\
+0 & 0 & 1
+\end{matrix}
+\right]
+\end{align*}
+
+Setting $A = R(\theta) \cdot S(s_x, s_y) \cdot T(t_x, t_y)$ will give us the following system of equations.
+\begin{align*}
+\left[
+\begin{matrix}
+8 & 3 & -7\\
+6 & -4 & -24\\
+0 & 0 & 1
+\end{matrix}
+\right]
+&=
+\left[
+\begin{matrix}
+s_x cos(\theta) & - s_y sin(\theta) & s_x cos(\theta) t_x - s_y sin(\theta) t_y\\
+s_x sin(\theta) & s_y cos(\theta) & s_x sin(\theta) t_x + s_y cos(\theta) t_y\\
+0 & 0 & 1
+\end{matrix}
+\right]\\
+s_x cos(\theta) &= 8\\
+s_x sin(\theta) &= 6\\
+- s_y sin(\theta) &= 3\\
+s_y cos(\theta) &= -4\\
+s_x cos(\theta) t_x - s_y sin(\theta) t_y &= -7\\
+s_x sin(\theta) t_x + s_y cos(\theta) t_y &= -24
+\end{align*}
+
+Solving these system of equations, we get a rotation of $\theta = tan^{-1}(\frac{3}{4})$, a scale of $s_x=10, s_y=-5$, and a translation of $t_x=-2, t_y=3$. The steps to solving these equations are left out to keep this answer short.
+%----------------------------------------------------------------------------------------
+\end{document}
