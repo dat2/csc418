@@ -1099,7 +1099,7 @@ void writePGM(char* filename, GLubyte* buffer, int width, int height, bool raw=t
         #ifdef __APPLE__
           fprintf(fp,"%d ",(uintptr_t)(&buffer[x+y*width]));
         #else
-          fprintf(fp,"%d ",int(&buffer[x+y*width]));
+          fprintf(fp,"%d ",intptr_t(&buffer[x+y*width]));
         #endif
 			}
 			fprintf(fp,"\n");
