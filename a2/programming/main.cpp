@@ -1044,6 +1044,7 @@ void drawArm(float xMove, float armRot, float shoulderX, float shoulderY, float 
 }
 
 void drawLeg(float xMove, float legX, float legY, float legZ, float knee) {
+  void (Frustrum::*draw)(void) const = &Frustrum::draw;
   Vector v;
 
   glPushMatrix();
@@ -1057,6 +1058,29 @@ void drawLeg(float xMove, float legX, float legY, float legZ, float knee) {
       rotateX(legX);
       rotateY(legY);
       rotateZ(legZ);
+
+      // draw foot
+      glPushMatrix();
+        // translate
+        v[0] = 0;
+        v[1] = -2.f;
+        translate(v);
+        // rotate
+        rotateX(90 + knee);
+
+        glPushMatrix();
+          // scale
+          glScalef(0.3f, 0.6f, 0.1f);
+
+          // move rotation point
+          v[1] = 0.5f;
+          // v[2] = -1.5f;
+          translate(v);
+
+          glColor3f(RGB(0,0,0));
+          drawOutlined(foot,draw);
+        glPopMatrix();
+      glPopMatrix();
 
       // draw leg
       glPushMatrix();
