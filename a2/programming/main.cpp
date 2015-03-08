@@ -155,7 +155,6 @@ const float FOOT_LENGTH = 1.75f;
 const Frustrum foot(FOOT_P, FOOT_LENGTH);
 
 // light stuff
-const float LIGHT_RADIUS = 10;
 int light_t = 0;
 Vector lightpos(4);
 
@@ -735,8 +734,8 @@ void initGlui()
 
 void setLightPosition() {
   // calculate position on the circle
-  lightpos[0] = LIGHT_RADIUS * cos(light_t * PI / 180.f + PI/2);
-  lightpos[1] = -LIGHT_RADIUS * sin(light_t * PI / 180.f + PI/2);
+  lightpos[0] = cos(light_t * PI / 180.f + PI/2);
+  lightpos[1] = -sin(light_t * PI / 180.f + PI/2);
 
   glLightfv(GL_LIGHT0, GL_POSITION, lightpos.getData());
 }
@@ -762,15 +761,14 @@ void initGl(void)
     glEnable(GL_LIGHT0);
 
     // light components
-    GLfloat ambientLight[] = { RGB(60, 60, 60), 1.0f };
-    GLfloat diffuseLight[] = { RGB(127, 127, 127), 1.0f };
+    GLfloat ambientLight[] = { RGB(160, 160, 160), 1.0f };
+    GLfloat diffuseLight[] = { RGB(160, 160, 160), 1.0f };
     GLfloat specularLight[] = { RGB(255, 255, 255), 1.0f };
 
     // assign the components to the light source
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos.getData());
 
     // materials
     glEnable(GL_COLOR_MATERIAL);
@@ -897,24 +895,26 @@ void rotateZ(float angle) {
 
 void enableOutline() {
   if(renderStyle != OUTLINED) return;
-  glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+  glPushMatrix();
+    glColor3f(RGB(255,255,255));
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
 void disableOutline() {
-  if(renderStyle != OUTLINED) return;
-  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    if(renderStyle != OUTLINED) return;
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+  glPopMatrix();
 }
 
 // regular fn pointer
 void drawOutlined(void (*drawFn)(void)) {
   drawFn();
   if(renderStyle == OUTLINED) {
-    glPushMatrix();
-      enableOutline();
-      glColor3f(RGB(0,0,0));
-      drawFn();
-      disableOutline();
-    glPopMatrix();
+    enableOutline();
+    drawFn();
+    disableOutline();
   }
 }
 
@@ -922,12 +922,9 @@ void drawOutlined(void (*drawFn)(void)) {
 void drawOutlined(const Frustrum& shape, void (Frustrum::*drawFn)(void) const) {
   (shape.*drawFn)();
   if(renderStyle == OUTLINED) {
-    glPushMatrix();
-      enableOutline();
-      glColor3f(RGB(0,0,0));
-      (shape.*drawFn)();
-      disableOutline();
-    glPopMatrix();
+    enableOutline();
+    (shape.*drawFn)();
+    disableOutline();
   }
 }
 
