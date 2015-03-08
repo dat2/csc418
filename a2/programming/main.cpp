@@ -55,6 +55,7 @@
 #include "keyframe.h"
 #include "timer.h"
 #include "vector.h"
+#include "shapes.h"
 
 #define IGNORE_GL_ERRORS() \
 { \
@@ -133,6 +134,14 @@ Timer* frameRateTimer;
 const float TIME_MIN = 0.0;
 const float TIME_MAX = 10.0;	// README: specifies the max time of the animation
 const float SEC_PER_FRAME = 1.0 / 60.0;
+
+const float HEAD_P = 2.f/3.f;
+const float HEAD_S = 1.f;
+const float BODY_P = 5.f/7.f;
+const float BODY_S = 2.f;
+
+const Frustrum head(HEAD_P, HEAD_S);
+const Frustrum body(BODY_P, BODY_S);
 
 // Joint settings
 
@@ -709,6 +718,10 @@ void initGl(void)
     // glClearColor (red, green, blue, alpha)
     // Ignore the meaning of the 'alpha' value for now
     glClearColor(0.7f,0.7f,0.9f,1.0f);
+
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
 }
 
 
@@ -813,7 +826,21 @@ void reshape(int w, int h)
   END_IGNORE_GL_ERRORS()
 }
 
+void translate(Vector v) {
+  glTranslatef(v[0], v[1], v[2]);
+}
 
+void rotateX(float angle) {
+  glRotatef(angle, 1.f, 0.f, 0.f);
+}
+
+void rotateY(float angle) {
+  glRotatef(angle, 0.f, 1.f, 0.f);
+}
+
+void rotateZ(float angle) {
+  glRotatef(angle, 0.f, 0.f, 1.f);
+}
 
 // display callback
 //
@@ -836,6 +863,11 @@ void display(void)
 	// Specify camera transformation
 	glTranslatef(camXPos, camYPos, camZPos);
 
+
+  // TODO determine render style and set glPolygonMode appropriately
+  if(renderStyle == WIREFRAME) {
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+  }
 
 	// Get the time for the current animation step, if necessary
 	if( animate_mode )
@@ -864,7 +896,6 @@ void display(void)
 		glui_keyframe->sync_live();
 	}
 
-
     ///////////////////////////////////////////////////////////
     // TODO:
 	//   Modify this function to draw the scene.
@@ -884,20 +915,42 @@ void display(void)
 	// SAMPLE CODE **********
 	//
 	glPushMatrix();
+    // translate
+    Vector root;
+    root[0] = joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_X);
+    root[1] = joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_Y);
+    root[2] = joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_Z);
+    translate(root);
 
-		// setup transformation for body part
-		glTranslatef(joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_X),
-					 joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_Y),
-					 joint_ui_data->getDOF(Keyframe::ROOT_TRANSLATE_Z));
-		glRotatef(30.0, 0.0, 1.0, 0.0);
-		glRotatef(30.0, 1.0, 0.0, 0.0);
+    // rotate
+    rotateX(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_X));
+    rotateY(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Y));
+    rotateZ(joint_ui_data->getDOF(Keyframe::ROOT_ROTATE_Z));
 
-		// determine render style and set glPolygonMode appropriately
+    // scale
+
+    // color
+
+    glPushMatrix();
+      glColor3f(RGB(255,255,255));
+      //translate
+      Vector head_t;
+      head_t[1] = BODY_S;
+      translate(head_t);
+
+      //rotate
+      rotateY(joint_ui_data->getDOF(Keyframe::HEAD));
+
+      //scale
+
+      head.draw();
+    glPopMatrix();
+
+    glColor3f(RGB(0,0,0));
+    body.draw();
 
 		// draw body part
-		glColor3f(1.0, 1.0, 1.0);
-		drawCube();
-
+		// drawCube();
 	glPopMatrix();
 	//
 	// SAMPLE CODE **********
@@ -917,6 +970,10 @@ void display(void)
     IGNORE_GL_ERRORS()
     glutSwapBuffers();
     END_IGNORE_GL_ERRORS()
+
+  if(renderStyle == WIREFRAME) {
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+  }
 }
 
 

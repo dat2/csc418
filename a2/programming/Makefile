@@ -61,7 +61,7 @@ PROGRAM	          = main
 CSRCS         =
 
 # Define all C++ source files here
-CPPSRCS       = main.cpp vector.cpp
+CPPSRCS       = main.cpp vector.cpp shapes.cpp
 
 ##############################################################################
 # Define additional rules that make should know about in order to compile our
@@ -89,9 +89,3 @@ $(PROGRAM) :	$(OBJ)
 # files along with the executable
 clean :
 	@rm -f $(OBJ) *~ core $(PROGRAM)
-
-
-
-
-
-
