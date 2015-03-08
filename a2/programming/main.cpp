@@ -156,9 +156,7 @@ const Frustrum foot(FOOT_P, FOOT_LENGTH);
 
 // light stuff
 const float LIGHT_RADIUS = 20;
-
-Vector ps[8];
-
+Vector lightpos(4);
 
 // Joint settings
 
@@ -234,7 +232,6 @@ void motion(int x, int y);
 
 // Functions to help draw the object
 Vector getInterpolatedJointDOFS(float time);
-void drawCube();
 
 
 // Image functions
@@ -730,6 +727,13 @@ void initGlui()
 	glui_render->set_main_gfx_window(windowID);
 }
 
+void updateLightSource(float t) {
+    // calculate position on teh circle
+    lightpos[2] = -LIGHT_RADIUS;
+    lightpos[3] = 1;
+
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos.getData());
+}
 
 // Performs most of the OpenGL intialization
 void initGl(void)
@@ -738,58 +742,36 @@ void initGl(void)
     // Ignore the meaning of the 'alpha' value for now
     glClearColor(0.7f,0.7f,0.9f,1.0f);
 
+    // culling and depth testing
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
     // lighting
     glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_LIGHT0);
-
     glEnable(GL_NORMALIZE);
-
-    // position
-    GLfloat lightpos[] = { 0.f, 0.f, -LIGHT_RADIUS, 1.0 };
-    GLfloat diffuseLightColour[] = {RGB(255, 0, 0), 1.0f}; //Color (0.5, 0.5, 0.5)
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLightColour);
-
-    // smooth
     glShadeModel(GL_SMOOTH);
 
-    // ambient
-    GLfloat ambientColour[] = { RGB(127, 127, 127), 1.0f}; //Color(0.2, 0.2, 0.2)
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColour);
+    // the first light source
+    glEnable(GL_LIGHT0);
+    // position
+    lightpos[2] = -LIGHT_RADIUS;
+    lightpos[3] = 1;
 
-    // shininess
-    GLfloat specular[] = { RGB(255,255,255), 1.0f };
-    glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
-    glMateriali(GL_FRONT, GL_SHININESS, 128);
+    // light components
+    GLfloat ambientLight[] = { RGB(60, 60, 60), 1.0f };
+    GLfloat diffuseLight[] = { RGB(127, 127, 127), 1.0f };
+    GLfloat specularLight[] = { RGB(255, 255, 255), 1.0f };
 
-    Vector w;
-    Vector l;
-    Vector h;
-    w[0] = 2.f;
-    l[2] = 2.f;
-    h[1] = 2.f;
+    // assign the components to the light source
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos.getData());
 
-    // 1st point
-    ps[0][0] = -1.f;
-    ps[0][1] = -1.f;
-    ps[0][2] = 1.f;
-
-    // 2,3,4
-    ps[1] = ps[0] + w;
-    ps[2] = ps[0] + w - l;
-    ps[3] = ps[0] - l;
-
-    // 5,6,7,8
-    ps[4] = ps[0] + h;
-    ps[5] = ps[1] + h;
-    ps[6] = ps[2] + h;
-    ps[7] = ps[3] + h;
+    // materials
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 }
 
 
@@ -977,7 +959,7 @@ void drawHead() {
         //scale
         glScalef(0.4f,0.05f,0.6f);
 
-        glColor3f(RGB(255,255,0));
+        glColor3f(RGB(255,129,0));
         drawOutlined(drawCube);
       glPopMatrix();
 
@@ -990,14 +972,14 @@ void drawHead() {
         //scale
         glScalef(0.4f,0.05f,0.6f);
 
-        glColor3f(RGB(255,255,0));
+        glColor3f(RGB(255,129,0));
         drawOutlined(drawCube);
       glPopMatrix();
 
     glPopMatrix();
     // END DRAW BEAK
 
-    glColor3f(RGB(255,255,255));
+    glColor3f(RGB(0,0,0));
     drawOutlined(head,draw);
 
   glPopMatrix();
@@ -1039,7 +1021,7 @@ void drawArm(float xMove, float armRot, float shoulderX, float shoulderY, float 
           v[1] = 1.0f;
           translate(v);
 
-          glColor3f(RGB(88,88,88));
+          glColor3f(RGB(65,105,225));
           drawOutlined(drawCube);
         glPopMatrix();
       glPopMatrix();
@@ -1054,7 +1036,7 @@ void drawArm(float xMove, float armRot, float shoulderX, float shoulderY, float 
         v[1] = ARM_HEIGHT / 2;
         translate(v);
 
-        glColor3f(RGB(88,88,88));
+        glColor3f(RGB(0,0,0));
         drawOutlined(arm,draw);
       glPopMatrix();
     glPopMatrix();
@@ -1067,7 +1049,7 @@ void drawLeg(float xMove, float legX, float legY, float legZ, float knee) {
   glPushMatrix();
     //translate
     v[0] = xMove;
-    v[1] = -(BODY_HEIGHT/2 + 1.f/2.f);
+    v[1] = -BODY_HEIGHT/2.f;
     translate(v);
 
     glPushMatrix();
@@ -1083,14 +1065,56 @@ void drawLeg(float xMove, float legX, float legY, float legZ, float knee) {
 
         // move rotation point
         v[0] = 0;
-        v[1] = -1.f / 2.f;
+        v[1] = -1.f;
         translate(v);
 
-        glColor3f(RGB(88,88,88));
+        glColor3f(RGB(0,0,0));
         drawOutlined(drawCube);
       glPopMatrix();
     glPopMatrix();
   glPopMatrix();
+}
+
+void setDefaultMaterial() {
+  // properties
+  float defaultAmbient[] = { 0.0, 0.0, 0.0, 1.0 };
+  float defaultDiffuse[] = { 0.55, 0.55, 0.55, 1.0 };
+  float defaultSpecular[] = { 0.1, 0.1, 0.1, 1.0};
+  float defaultShininess = 90.0f/128.0f;
+
+  // set the material
+  glMaterialfv(GL_FRONT, GL_AMBIENT, defaultAmbient);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, defaultDiffuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, defaultSpecular);
+  glMaterialf(GL_FRONT, GL_SHININESS, defaultShininess);
+}
+
+void setMetallicMaterial() {
+  // properties
+  float polishedSilverAmbient[] = { 0.23125f, 0.23125f, 0.23125f, 1.0f };
+  float polishedSilverDiffuse[] = { 0.2775f, 0.2775f, 0.2775f, 1.0f };
+  float polishedSilverSpecular[] = { 0.773911f, 0.773911f, 0.773911f, 1.0f };
+  float polishedSilverShininess = 89.6f/128.0f;
+
+  // set the material
+  glMaterialfv(GL_FRONT, GL_AMBIENT, polishedSilverAmbient);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, polishedSilverDiffuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, polishedSilverSpecular);
+  glMaterialf(GL_FRONT, GL_SHININESS, polishedSilverShininess);
+}
+
+void setMatteMaterial() {
+  // properties
+  float whiteRubberAmbient[] = { 0.05f,0.05f,0.05f,1.0f  };
+  float whiteRubberDiffuse[] = { 0.5f,0.5f,0.5f,1.0f };
+  float whiteRubberSpecular[] = { 0.1f,0.1f,0.1f,1.0f};
+  float whiteRubberShininess = 10.0f/128.0f;
+
+  // set the material
+  glMaterialfv(GL_FRONT, GL_AMBIENT, whiteRubberAmbient);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteRubberDiffuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, whiteRubberSpecular);
+  glMaterialf(GL_FRONT, GL_SHININESS, whiteRubberShininess);
 }
 
 // display callback
@@ -1114,10 +1138,16 @@ void display(void)
 	// Specify camera transformation
 	glTranslatef(camXPos, camYPos, camZPos);
 
-
-  // TODO determine render style and set glPolygonMode appropriately
   if(renderStyle == WIREFRAME) {
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+  }
+
+  if(renderStyle == METALLIC) {
+    setMetallicMaterial();
+  } else if(renderStyle == MATTE) {
+    setMatteMaterial();
+  } else {
+    setDefaultMaterial();
   }
 
 	// Get the time for the current animation step, if necessary
@@ -1185,34 +1215,34 @@ void display(void)
     drawHead();
 
     // DRAW LEFT_LEG
-    drawLeg(0.8, joint_ui_data->getDOF(Keyframe::L_HIP_PITCH),
+    drawLeg(0.6, joint_ui_data->getDOF(Keyframe::L_HIP_PITCH),
             joint_ui_data->getDOF(Keyframe::L_HIP_YAW),
             joint_ui_data->getDOF(Keyframe::L_HIP_ROLL),
             joint_ui_data->getDOF(Keyframe::L_KNEE));
 
     // DRAW RIGHT_LEG
-    drawLeg(-0.8, joint_ui_data->getDOF(Keyframe::R_HIP_PITCH),
+    drawLeg(-0.6, joint_ui_data->getDOF(Keyframe::R_HIP_PITCH),
             joint_ui_data->getDOF(Keyframe::R_HIP_YAW),
             joint_ui_data->getDOF(Keyframe::R_HIP_ROLL),
             joint_ui_data->getDOF(Keyframe::R_KNEE));
 
-    glColor3f(RGB(144,144,144));
+    glColor3f(RGB(255,255,255));
     drawOutlined(body,draw);
 
     // DRAW LEFT_ARM
     drawArm(0.8, ARM_ROT, joint_ui_data->getDOF(Keyframe::L_SHOULDER_PITCH),
-            joint_ui_data->getDOF(Keyframe::L_SHOULDER_YAW),
+            -joint_ui_data->getDOF(Keyframe::L_SHOULDER_YAW),
             joint_ui_data->getDOF(Keyframe::L_SHOULDER_ROLL),
             joint_ui_data->getDOF(Keyframe::L_ELBOW));
 
     // DRAW RIGHT_ARM
     drawArm(-0.8, -ARM_ROT, joint_ui_data->getDOF(Keyframe::R_SHOULDER_PITCH),
             joint_ui_data->getDOF(Keyframe::R_SHOULDER_YAW),
-            joint_ui_data->getDOF(Keyframe::R_SHOULDER_ROLL),
+            -joint_ui_data->getDOF(Keyframe::R_SHOULDER_ROLL),
             joint_ui_data->getDOF(Keyframe::R_ELBOW));
 
 
-	glPopMatrix();
+	 glPopMatrix();
 	//
 	// SAMPLE CODE **********
 
@@ -1274,71 +1304,6 @@ void motion(int x, int y)
 		glutPostRedisplay();
     END_IGNORE_GL_ERRORS()
 	}
-}
-
-
-// Draw a unit cube, centered at the current location
-// README: Helper code for drawing a cube
-void drawCube()
-{
-  Vector zero;
-  Vector ns[6];
-
-  // front and back
-  ns[0][2] = 1.f;
-  ns[1][2] = -1.f;
-
-  // left and right
-  ns[2][0] = -1.f;
-  ns[3][0] = 1.f;
-
-  // top and bottom
-  ns[4][1] = 1.f;
-  ns[5][1] = -1.f;
-
-	glBegin(GL_QUADS);
-		// draw front face
-    setNorm(zero - ns[0]);
-    setVert(ps[0]);
-    setVert(ps[1]);
-    setVert(ps[5]);
-    setVert(ps[4]);
-
-		// draw back face
-    setNorm(zero - ns[1]);
-    setVert(ps[2]);
-    setVert(ps[3]);
-    setVert(ps[7]);
-    setVert(ps[6]);
-
-		// draw left face
-    setNorm(zero - ns[2]);
-    setVert(ps[3]);
-    setVert(ps[0]);
-    setVert(ps[4]);
-    setVert(ps[7]);
-
-		// draw right face
-    setNorm(zero - ns[3]);
-    setVert(ps[1]);
-    setVert(ps[2]);
-    setVert(ps[6]);
-    setVert(ps[5]);
-
-		// draw top
-    setNorm(zero - ns[4]);
-    setVert(ps[4]);
-    setVert(ps[5]);
-    setVert(ps[6]);
-    setVert(ps[7]);
-
-		// draw bottom
-    setNorm(zero - ns[5]);
-    setVert(ps[3]);
-    setVert(ps[2]);
-    setVert(ps[1]);
-    setVert(ps[0]);
-	glEnd();
 }
 
 ///////////////////////////////////////////////////////////

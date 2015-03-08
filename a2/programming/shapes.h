@@ -37,5 +37,6 @@ private:
 
 void setNorm(Vector v);
 void setVert(Vector v);
+void drawCube(void);
 
 #endif
