@@ -155,7 +155,8 @@ const float FOOT_LENGTH = 1.75f;
 const Frustrum foot(FOOT_P, FOOT_LENGTH);
 
 // light stuff
-const float LIGHT_RADIUS = 20;
+const float LIGHT_RADIUS = 10;
+int light_t = 0;
 Vector lightpos(4);
 
 // Joint settings
@@ -678,6 +679,11 @@ void initGlui()
 	glui_spinner->set_int_limits(KEYFRAME_MIN, KEYFRAME_MAX-1, GLUI_LIMIT_CLAMP);
 	glui_spinner->set_speed(SPINNER_SPEED);
 
+  // light position
+  glui_spinner = glui_keyframe->add_spinner_to_panel(glui_panel, "Light Position", GLUI_SPINNER_INT, &light_t);
+  glui_spinner->set_int_limits(0, 360, GLUI_LIMIT_CLAMP);
+  glui_spinner->set_speed(SPINNER_SPEED);
+
 	glui_keyframe->add_separator();
 
 	// Add buttons to load and update keyframes
@@ -727,12 +733,12 @@ void initGlui()
 	glui_render->set_main_gfx_window(windowID);
 }
 
-void updateLightSource(float t) {
-    // calculate position on teh circle
-    lightpos[2] = -LIGHT_RADIUS;
-    lightpos[3] = 1;
+void setLightPosition() {
+  // calculate position on the circle
+  lightpos[0] = LIGHT_RADIUS * cos(light_t * PI / 180.f + PI/2);
+  lightpos[1] = -LIGHT_RADIUS * sin(light_t * PI / 180.f + PI/2);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos.getData());
+  glLightfv(GL_LIGHT0, GL_POSITION, lightpos.getData());
 }
 
 // Performs most of the OpenGL intialization
@@ -754,9 +760,6 @@ void initGl(void)
 
     // the first light source
     glEnable(GL_LIGHT0);
-    // position
-    lightpos[2] = -LIGHT_RADIUS;
-    lightpos[3] = 1;
 
     // light components
     GLfloat ambientLight[] = { RGB(60, 60, 60), 1.0f };
@@ -1161,7 +1164,7 @@ void display(void)
 
 	// Specify camera transformation
 	glTranslatef(camXPos, camYPos, camZPos);
-
+  setLightPosition();
   if(renderStyle == WIREFRAME) {
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
   }
