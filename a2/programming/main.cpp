@@ -103,8 +103,8 @@ const GLdouble NEAR_CLIP   = 0.1;
 const GLdouble FAR_CLIP    = 1000.0;
 
 // Render settings
-enum { WIREFRAME, SOLID, OUTLINED };	// README: the different render styles
-int renderStyle = WIREFRAME;			// README: the selected render style
+enum { WIREFRAME, SOLID, OUTLINED, METALLIC, MATTE };	// README: the different render styles
+int renderStyle = SOLID;			// README: the selected render style
 
 // Animation settings
 int animate_mode = 0;			// 0 = no anim, 1 = animate
@@ -135,13 +135,30 @@ const float TIME_MIN = 0.0;
 const float TIME_MAX = 10.0;	// README: specifies the max time of the animation
 const float SEC_PER_FRAME = 1.0 / 60.0;
 
+// special shapes for the penguin
 const float HEAD_P = 2.f/3.f;
-const float HEAD_S = 1.f;
-const float BODY_P = 5.f/7.f;
-const float BODY_S = 2.f;
+const float HEAD_HEIGHT = 1.f;
+const Frustrum head(HEAD_P, HEAD_HEIGHT);
 
-const Frustrum head(HEAD_P, HEAD_S);
-const Frustrum body(BODY_P, BODY_S);
+const float BODY_P = 5.f/7.f;
+const float BODY_HEIGHT = 2.f;
+const Frustrum body(BODY_P, BODY_HEIGHT);
+
+const float ARM_P = 5.f/7.f;
+const float ARM_HEIGHT = 1.75f;
+const Frustrum arm(ARM_P, ARM_HEIGHT);
+
+const float ARM_ROT = 15;
+
+const float FOOT_P = 5.f/7.f;
+const float FOOT_LENGTH = 1.75f;
+const Frustrum foot(FOOT_P, FOOT_LENGTH);
+
+// light stuff
+const float LIGHT_RADIUS = 20;
+
+Vector ps[8];
+
 
 // Joint settings
 
@@ -341,9 +358,9 @@ void updateKeyframeButton(int)
 
 	// Update the appropriate entry in the 'keyframes' array
 	// with the 'joint_ui_data' data
-  // since = is a copy constructor, yeah
+  keyframes[keyframeID].setID(keyframeID);
   keyframes[keyframeID].setDOFVector(joint_ui_data->getDOFVector());
-  keyframes[keyframeID].setTime(keyframeID);
+  keyframes[keyframeID].setTime(0.1f * keyframeID);
 
 	// Let the user know the values have been updated
 	sprintf(msg, "Status: Keyframe %d updated successfully", keyframeID);
@@ -701,6 +718,8 @@ void initGlui()
 	glui_render->add_radiobutton_to_group(glui_radio_group, "Wireframe");
 	glui_render->add_radiobutton_to_group(glui_radio_group, "Solid");
 	glui_render->add_radiobutton_to_group(glui_radio_group, "Solid w/ outlines");
+  glui_render->add_radiobutton_to_group(glui_radio_group, "Metallic");
+  glui_render->add_radiobutton_to_group(glui_radio_group, "Matte");
 	//
 	// ***************************************************
 
@@ -722,6 +741,55 @@ void initGl(void)
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
+
+    // lighting
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_LIGHT0);
+
+    glEnable(GL_NORMALIZE);
+
+    // position
+    GLfloat lightpos[] = { 0.f, 0.f, -LIGHT_RADIUS, 1.0 };
+    GLfloat diffuseLightColour[] = {RGB(255, 0, 0), 1.0f}; //Color (0.5, 0.5, 0.5)
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLightColour);
+
+    // smooth
+    glShadeModel(GL_SMOOTH);
+
+    // ambient
+    GLfloat ambientColour[] = { RGB(127, 127, 127), 1.0f}; //Color(0.2, 0.2, 0.2)
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColour);
+
+    // shininess
+    GLfloat specular[] = { RGB(255,255,255), 1.0f };
+    glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+    glMateriali(GL_FRONT, GL_SHININESS, 128);
+
+    Vector w;
+    Vector l;
+    Vector h;
+    w[0] = 2.f;
+    l[2] = 2.f;
+    h[1] = 2.f;
+
+    // 1st point
+    ps[0][0] = -1.f;
+    ps[0][1] = -1.f;
+    ps[0][2] = 1.f;
+
+    // 2,3,4
+    ps[1] = ps[0] + w;
+    ps[2] = ps[0] + w - l;
+    ps[3] = ps[0] - l;
+
+    // 5,6,7,8
+    ps[4] = ps[0] + h;
+    ps[5] = ps[1] + h;
+    ps[6] = ps[2] + h;
+    ps[7] = ps[3] + h;
 }
 
 
@@ -842,6 +910,189 @@ void rotateZ(float angle) {
   glRotatef(angle, 0.f, 0.f, 1.f);
 }
 
+void enableOutline() {
+  if(renderStyle != OUTLINED) return;
+  glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+}
+
+void disableOutline() {
+  if(renderStyle != OUTLINED) return;
+  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+}
+
+// regular fn pointer
+void drawOutlined(void (*drawFn)(void)) {
+  drawFn();
+  if(renderStyle == OUTLINED) {
+    glPushMatrix();
+      enableOutline();
+      glColor3f(RGB(0,0,0));
+      drawFn();
+      disableOutline();
+    glPopMatrix();
+  }
+}
+
+// class member pointer...
+void drawOutlined(const Frustrum& shape, void (Frustrum::*drawFn)(void) const) {
+  (shape.*drawFn)();
+  if(renderStyle == OUTLINED) {
+    glPushMatrix();
+      enableOutline();
+      glColor3f(RGB(0,0,0));
+      (shape.*drawFn)();
+      disableOutline();
+    glPopMatrix();
+  }
+}
+
+void drawHead() {
+  void (Frustrum::*draw)(void) const = &Frustrum::draw;
+  Vector v;
+
+  glPushMatrix();
+    //translate
+    v[1] = BODY_HEIGHT * 0.9;
+    translate(v);
+
+    //rotate
+    rotateY(joint_ui_data->getDOF(Keyframe::HEAD));
+
+    //scale
+    glScalef(0.9f,0.9f,0.9f);
+
+    // DRAW BEAK
+    glPushMatrix();
+      //translate
+      v[1] = -HEAD_HEIGHT/2;
+      v[2] = 1.2f;
+      translate(v);
+
+      // rotate
+
+      // color
+
+      // top of beak
+      glPushMatrix();
+        //scale
+        glScalef(0.4f,0.05f,0.6f);
+
+        glColor3f(RGB(255,255,0));
+        drawOutlined(drawCube);
+      glPopMatrix();
+
+      // bottom of beak
+      glPushMatrix();
+        v[1] = -(0.1 + (joint_ui_data->getDOF(Keyframe::BEAK) * 0.1));
+        v[2] = 0;
+        translate(v);
+
+        //scale
+        glScalef(0.4f,0.05f,0.6f);
+
+        glColor3f(RGB(255,255,0));
+        drawOutlined(drawCube);
+      glPopMatrix();
+
+    glPopMatrix();
+    // END DRAW BEAK
+
+    glColor3f(RGB(255,255,255));
+    drawOutlined(head,draw);
+
+  glPopMatrix();
+}
+
+void drawArm(float xMove, float armRot, float shoulderX, float shoulderY, float shoulderZ, float elbow) {
+  void (Frustrum::*draw)(void) const = &Frustrum::draw;
+  Vector v;
+
+  glPushMatrix();
+    //translate
+    v[0] = xMove;
+    v[1] = ARM_HEIGHT / 2 - ARM_HEIGHT / 10;
+    translate(v);
+
+    glPushMatrix();
+      //rotate
+      rotateX(shoulderX);
+      rotateY(shoulderY);
+      rotateZ(180 + armRot + shoulderZ);
+
+      // flip vertically
+
+      // DRAW ELBOW
+      glPushMatrix();
+        //translate
+        v[0] = 0;
+        v[1] = ARM_HEIGHT - ARM_HEIGHT / 10;
+        translate(v);
+
+        //rotate
+        rotateX(elbow);
+
+        //scale
+        glPushMatrix();
+          glScalef(0.1f,0.5f,0.3f);
+
+          // move the rotation point
+          v[1] = 1.0f;
+          translate(v);
+
+          glColor3f(RGB(88,88,88));
+          drawOutlined(drawCube);
+        glPopMatrix();
+      glPopMatrix();
+      // END DRAW ELBOW
+
+      // move the rotation point
+      // draw the actual arm
+      glPushMatrix();
+        //scale
+        glScalef(0.1f,1.f,0.5f);
+        v[0] = 0;
+        v[1] = ARM_HEIGHT / 2;
+        translate(v);
+
+        glColor3f(RGB(88,88,88));
+        drawOutlined(arm,draw);
+      glPopMatrix();
+    glPopMatrix();
+  glPopMatrix();
+}
+
+void drawLeg(float xMove, float legX, float legY, float legZ, float knee) {
+  Vector v;
+
+  glPushMatrix();
+    //translate
+    v[0] = xMove;
+    v[1] = -(BODY_HEIGHT/2 + 1.f/2.f);
+    translate(v);
+
+    glPushMatrix();
+      //rotate
+      rotateX(legX);
+      rotateY(legY);
+      rotateZ(legZ);
+
+      // draw leg
+      glPushMatrix();
+        // scale
+        glScalef(0.2f,1.0f,0.2f);
+
+        // move rotation point
+        v[0] = 0;
+        v[1] = -1.f / 2.f;
+        translate(v);
+
+        glColor3f(RGB(88,88,88));
+        drawOutlined(drawCube);
+      glPopMatrix();
+    glPopMatrix();
+  glPopMatrix();
+}
+
 // display callback
 //
 // README: This gets called by the event handler
@@ -911,6 +1162,7 @@ void display(void)
 	//   enumeration to determine how the geometry should be
 	//   rendered.
     ///////////////////////////////////////////////////////////
+  void (Frustrum::*draw)(void) const = &Frustrum::draw;
 
 	// SAMPLE CODE **********
 	//
@@ -929,28 +1181,37 @@ void display(void)
 
     // scale
 
-    // color
+    // DRAW HEAD
+    drawHead();
 
-    glPushMatrix();
-      glColor3f(RGB(255,255,255));
-      //translate
-      Vector head_t;
-      head_t[1] = BODY_S;
-      translate(head_t);
+    // DRAW LEFT_LEG
+    drawLeg(0.8, joint_ui_data->getDOF(Keyframe::L_HIP_PITCH),
+            joint_ui_data->getDOF(Keyframe::L_HIP_YAW),
+            joint_ui_data->getDOF(Keyframe::L_HIP_ROLL),
+            joint_ui_data->getDOF(Keyframe::L_KNEE));
 
-      //rotate
-      rotateY(joint_ui_data->getDOF(Keyframe::HEAD));
+    // DRAW RIGHT_LEG
+    drawLeg(-0.8, joint_ui_data->getDOF(Keyframe::R_HIP_PITCH),
+            joint_ui_data->getDOF(Keyframe::R_HIP_YAW),
+            joint_ui_data->getDOF(Keyframe::R_HIP_ROLL),
+            joint_ui_data->getDOF(Keyframe::R_KNEE));
 
-      //scale
+    glColor3f(RGB(144,144,144));
+    drawOutlined(body,draw);
 
-      head.draw();
-    glPopMatrix();
+    // DRAW LEFT_ARM
+    drawArm(0.8, ARM_ROT, joint_ui_data->getDOF(Keyframe::L_SHOULDER_PITCH),
+            joint_ui_data->getDOF(Keyframe::L_SHOULDER_YAW),
+            joint_ui_data->getDOF(Keyframe::L_SHOULDER_ROLL),
+            joint_ui_data->getDOF(Keyframe::L_ELBOW));
 
-    glColor3f(RGB(0,0,0));
-    body.draw();
+    // DRAW RIGHT_ARM
+    drawArm(-0.8, -ARM_ROT, joint_ui_data->getDOF(Keyframe::R_SHOULDER_PITCH),
+            joint_ui_data->getDOF(Keyframe::R_SHOULDER_YAW),
+            joint_ui_data->getDOF(Keyframe::R_SHOULDER_ROLL),
+            joint_ui_data->getDOF(Keyframe::R_ELBOW));
 
-		// draw body part
-		// drawCube();
+
 	glPopMatrix();
 	//
 	// SAMPLE CODE **********
@@ -1020,42 +1281,63 @@ void motion(int x, int y)
 // README: Helper code for drawing a cube
 void drawCube()
 {
+  Vector zero;
+  Vector ns[6];
+
+  // front and back
+  ns[0][2] = 1.f;
+  ns[1][2] = -1.f;
+
+  // left and right
+  ns[2][0] = -1.f;
+  ns[3][0] = 1.f;
+
+  // top and bottom
+  ns[4][1] = 1.f;
+  ns[5][1] = -1.f;
+
 	glBegin(GL_QUADS);
 		// draw front face
-		glVertex3f(-1.0, -1.0, 1.0);
-		glVertex3f( 1.0, -1.0, 1.0);
-		glVertex3f( 1.0,  1.0, 1.0);
-		glVertex3f(-1.0,  1.0, 1.0);
+    setNorm(zero - ns[0]);
+    setVert(ps[0]);
+    setVert(ps[1]);
+    setVert(ps[5]);
+    setVert(ps[4]);
 
 		// draw back face
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
+    setNorm(zero - ns[1]);
+    setVert(ps[2]);
+    setVert(ps[3]);
+    setVert(ps[7]);
+    setVert(ps[6]);
 
 		// draw left face
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f(-1.0, -1.0,  1.0);
-		glVertex3f(-1.0,  1.0,  1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
+    setNorm(zero - ns[2]);
+    setVert(ps[3]);
+    setVert(ps[0]);
+    setVert(ps[4]);
+    setVert(ps[7]);
 
 		// draw right face
-		glVertex3f( 1.0, -1.0,  1.0);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
-		glVertex3f( 1.0,  1.0,  1.0);
+    setNorm(zero - ns[3]);
+    setVert(ps[1]);
+    setVert(ps[2]);
+    setVert(ps[6]);
+    setVert(ps[5]);
 
 		// draw top
-		glVertex3f(-1.0,  1.0,  1.0);
-		glVertex3f( 1.0,  1.0,  1.0);
-		glVertex3f( 1.0,  1.0, -1.0);
-		glVertex3f(-1.0,  1.0, -1.0);
+    setNorm(zero - ns[4]);
+    setVert(ps[4]);
+    setVert(ps[5]);
+    setVert(ps[6]);
+    setVert(ps[7]);
 
 		// draw bottom
-		glVertex3f(-1.0, -1.0, -1.0);
-		glVertex3f( 1.0, -1.0, -1.0);
-		glVertex3f( 1.0, -1.0,  1.0);
-		glVertex3f(-1.0, -1.0,  1.0);
+    setNorm(zero - ns[5]);
+    setVert(ps[3]);
+    setVert(ps[2]);
+    setVert(ps[1]);
+    setVert(ps[0]);
 	glEnd();
 }
 

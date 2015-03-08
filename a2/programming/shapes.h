@@ -31,6 +31,11 @@ public:
   void draw() const;
 private:
   Vector points[8];
+
+  Vector normals[6];
 };
+
+void setNorm(Vector v);
+void setVert(Vector v);
 
 #endif

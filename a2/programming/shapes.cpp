@@ -25,16 +25,44 @@ Frustrum::Frustrum(float top_percentage, float height)
 
   // init the top
   points[0] = points[4] * top_percentage;
+  points[0][1] = points[4][1];
+
   points[1] = points[5] * top_percentage;
+  points[1][1] = points[5][1];
+
   points[2] = points[6] * top_percentage;
+  points[2][1] = points[6][1];
+
   points[3] = points[7] * top_percentage;
+  points[3][1] = points[7][1];
 
   for(int i = 0; i < 4; i++) {
     points[i][1] += height;
   }
+
+  // front
+  normals[0][2] = -1.f;
+
+  // back
+  normals[1][2] = 1.f;
+
+  // left
+  normals[2][0] = 1.f;
+
+  // right
+  normals[3][0] = -1.f;
+
+  // top
+  normals[4][1] = -1.f;
+  // bottom
+  normals[5][1] = 1.f;
 }
 
-void vectorToVert(Vector v) {
+void setNorm(Vector v) {
+  glNormal3f(v[0], v[1], v[2]);
+}
+
+void setVert(Vector v) {
   glVertex3f(v[0], v[1], v[2]);
 }
 
@@ -43,44 +71,50 @@ void Frustrum::draw() const {
   glBegin(GL_QUADS);
     // draw front face
     // glColor3f(FRONT_COLOUR);
-    vectorToVert(points[4]);
-    vectorToVert(points[7]);
-    vectorToVert(points[3]);
-    vectorToVert(points[0]);
+    setNorm(normals[0]);
+    setVert(points[4]);
+    setVert(points[7]);
+    setVert(points[3]);
+    setVert(points[0]);
 
     // draw back face
     // glColor3f(BACK_COLOUR);
-    vectorToVert(points[6]);
-    vectorToVert(points[5]);
-    vectorToVert(points[1]);
-    vectorToVert(points[2]);
+    setNorm(normals[1]);
+    setVert(points[6]);
+    setVert(points[5]);
+    setVert(points[1]);
+    setVert(points[2]);
 
     // draw left face
     // glColor3f(LEFT_COLOUR);
-    vectorToVert(points[4]);
-    vectorToVert(points[0]);
-    vectorToVert(points[1]);
-    vectorToVert(points[5]);
+    setNorm(normals[2]);
+    setVert(points[4]);
+    setVert(points[0]);
+    setVert(points[1]);
+    setVert(points[5]);
 
     // draw right face
     // glColor3f(RIGHT_COLOUR);
-    vectorToVert(points[7]);
-    vectorToVert(points[6]);
-    vectorToVert(points[2]);
-    vectorToVert(points[3]);
+    setNorm(normals[3]);
+    setVert(points[7]);
+    setVert(points[6]);
+    setVert(points[2]);
+    setVert(points[3]);
 
     // draw top
     // glColor3f(TOP_COLOUR);
-    vectorToVert(points[0]);
-    vectorToVert(points[3]);
-    vectorToVert(points[2]);
-    vectorToVert(points[1]);
+    setNorm(normals[4]);
+    setVert(points[0]);
+    setVert(points[3]);
+    setVert(points[2]);
+    setVert(points[1]);
 
     // draw bottom
     // glColor3f(BOTTOM_COLOUR);
-    vectorToVert(points[4]);
-    vectorToVert(points[5]);
-    vectorToVert(points[6]);
-    vectorToVert(points[7]);
+    setNorm(normals[5]);
+    setVert(points[4]);
+    setVert(points[5]);
+    setVert(points[6]);
+    setVert(points[7]);
   glEnd();
 }
