@@ -1,0 +1,39 @@
+1
+a) (1,1,8), sub in 1,1,z
+b) (13,-10,-2)
+
+2
+a)
+x(t) = 2 + cos(2 pi t)
+y(t) = 0
+z(t) = 2t
+t e [0,1]
+
+b)
+
+x(t,theta)
+
+3
+a)
+move(-2.5,-2.5)
+scale(-2,2)
+move(2,2)
+[[-2 0 7] ; [0 2 -3] ; [0 0 1]]
+
+4
+a)
+[2,4,1/2,1]
+
+b)
+z value in canonical view space
+open gl uses it to compute visibility on pixel by pixel basis
+
+c)
+all pseudo depth are -f
+
+d)
+change row3,col4 to non-zero value
+
+5
+(hardest)
+

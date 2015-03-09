@@ -1,0 +1,11 @@
+Q5
+x(t,u) = a*cos(t*2pi)*sin(u*2pi)
+y(t,u) = b*sin(t*2pi)*sin(u*2pi)
+z(t,u) = c*cos(u*2pi)
+
+b) cross section
+two points on the intersection are the normals, not at an arbitrary point of t
+and u, they have to be those specific points of t and u
+
+Q3 vanishing point
+limit u1, u2 -> infinity, u1,u2 for l1,l2
