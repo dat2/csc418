@@ -25,6 +25,7 @@
 \usepackage{amsmath} % Math packages
 \usepackage{enumerate}
 \usepackage{algpseudocode}
+\usepackage{graphicx}
 
 \usepackage{fancyhdr} % Custom headers and footers
 \pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
@@ -77,16 +78,16 @@ Given that $\vec{e} = (1,2,2)$ $\vec{g} =(1,1,3)$ and $\vec{r}=(0,1,0)$, $\vec{s
 
 \begin{align*}
 \vec{s}&=-\frac{\vec{g}}{\| \vec{g} \|} = \left(-\frac{1}{\sqrt{11}},-\frac{1}{\sqrt{11}},-\frac{3}{\sqrt{11}} \right) \\
-\vec{u}&=\frac{\vec{r} \times \vec{s}}{\|\vec{r} \times \vec{s}\|} = \left(-\frac{1}{\sqrt{5}},0,\frac{1}{\sqrt{5}} \right)\\
-\vec{v}&=\frac{\vec{s} \times \vec{u}}{\|\vec{s} \times \vec{u}\|} = \left(-\frac{1}{3\sqrt{2}},-\frac{4}{3\sqrt{2}},-\frac{1}{3\sqrt{2}} \right)
+\vec{u}&=\frac{\vec{r} \times \vec{s}}{\|\vec{r} \times \vec{s}\|} = \left(-\frac{3}{\sqrt{10}},0,\frac{1}{\sqrt{10}} \right)\\
+\vec{v}&=\frac{\vec{s} \times \vec{u}}{\|\vec{s} \times \vec{u}\|} = \left(-\frac{1}{\sqrt{110}},\sqrt{\frac{10}{11}},-\frac{3}{\sqrt{110}} \right)
 \end{align*}
 
 From here, we can calculate the world to camera transformation matrix as follows:
 \begin{align*}
 M_{wc} &= \left[
 \begin{array}{ccc|c}
--\frac{1}{\sqrt{5}} & 0 & \frac{1}{\sqrt{5}} & -\frac{1}{\sqrt{5}}\\
-\frac{1}{3\sqrt{2}} & -\frac{4}{3\sqrt{2}} & -\frac{1}{3\sqrt{2}} & \frac{11}{3\sqrt{2}}\\
+-\frac{3}{\sqrt{10}} & 0 & \frac{1}{\sqrt{10}}  & \frac{1}{\sqrt{10}}\\
+-\frac{1}{\sqrt{110}} & \sqrt{\frac{10}{11}} & -\frac{3}{\sqrt{110}} & -\frac{13}{\sqrt{110}}\\
 -\frac{1}{\sqrt{11}} & -\frac{1}{\sqrt{11}} & -\frac{3}{\sqrt{11}} & \frac{9}{\sqrt{11}}\\
 0 & 0 & 0 & 1
 \end{array}
@@ -94,9 +95,9 @@ M_{wc} &= \left[
 &\text{Where the $M_{wc}$ matrix has the following form:}\\
 M_{wc} &= \left[
 \begin{array}{ccc|c}
-u_x & u_y & u_z & \vec{u} \cdot \vec{e} \\
-v_x & v_y & v_z & \vec{v} \cdot \vec{e} \\
-s_x & s_y & s_z & \vec{s} \cdot \vec{e} \\
+u_x & u_y & u_z & -\vec{u} \cdot \vec{e} \\
+v_x & v_y & v_z & -\vec{v} \cdot \vec{e} \\
+s_x & s_y & s_z & -\vec{s} \cdot \vec{e} \\
 0 & 0 & 0 & 1
 \end{array}
 \right]
@@ -105,7 +106,6 @@ s_x & s_y & s_z & \vec{s} \cdot \vec{e} \\
 %----------------------------------------------------------------------------------------
 %	PROBLEM 2
 %----------------------------------------------------------------------------------------
-\newpage
 \section{Question 2}
 First lets calculate $m$ then project it to $m'$.
 \begin{align*}
@@ -268,7 +268,6 @@ q_y\\
 %----------------------------------------------------------------------------------------
 %	PROBLEM 3
 %----------------------------------------------------------------------------------------
-\newpage
 \section{Question 3}
 
 The projected lines have the following form
@@ -343,7 +342,6 @@ f\\
 %	PROBLEM 4
 %----------------------------------------------------------------------------------------
 
-\newpage
 \section{Question 4}
 The canonical view transform using $L=-1, R = 1, B = -1, T = 1, f = 1, F=1001$ is this:
 \begin{align*}
@@ -410,15 +408,90 @@ The relationship is not linear. Plot $z_{ci}$ and $z_{vi}$ on a graph and calcul
 %	PROBLEM 5
 %----------------------------------------------------------------------------------------
 
-\newpage
 \section{Question 5}
+\begin{enumerate}[a)]
+
+\item
+The general equation of an ellipse in 2d is $x(t) = cos(t), y(t) = sin(t)$, for some $t \in [0,n]$. In the $xy$-plane we must hold hold $u$ constant since $t$ is the planar parameter of the equation. Similarly for the cross section of the ellipsoid and the $x=0$ plane, we must hold $t$ constant.
+\\
+\\
+\begin{minipage}{0.45\textwidth}
+Let $u=\frac{1}{4}$. The equation of the ellipse that is the cross section of the ellipsoid and the plane $z=0$ is given by $e_1(t)$.
+\begin{eqnarray*}
+x(t) &=& x\left(t, \frac{1}{4}\right) = a \cos(2\pi t) \sin\left(\frac{\pi}{2}\right) = a \cos (2 \pi t)\\
+y(t) &=& y\left(t,\frac{1}{4}\right) = b \sin (2 \pi t) \sin\left(\frac{\pi}{2}\right) = b \sin (2 \pi t)\\
+z(t) &=& z\left(t,\frac{1}{4}\right) = 0\\
+e_1(t) &=& \left(a \cos (2 \pi t), b \sin (2 \pi t), 0\right)
+\end{eqnarray*}
+\end{minipage}\
+\quad\quad\quad\quad\quad
+\begin{minipage}{0.45\textwidth}
+Let $t=\frac{1}{4}$. The equation of the ellipse that is the cross section of the ellipsoid and the plane $x=0$ is given by $e_2(t)$.
+\begin{eqnarray*}
+x(u) &=& x\left(\frac{1}{4},u\right) = a \cos\left(\frac{\pi}{2}\right) \sin(2 \pi u) = 0\\
+y(u) &=& y\left(\frac{1}{4},u\right) = b \sin \left(\frac{\pi}{2}\right) \sin(2 \pi u) = b \sin (2 \pi u)\\
+z(u) &=& z\left(\frac{1}{4},u\right) = c \cos(2 \pi u)\\
+e_2(u) &=& \left(0, b \sin (2 \pi u), c \cos(2 \pi u)\right)
+\end{eqnarray*}
+\end{minipage}
+
+\item
+The tangent to these ellipses are simply the derivative of their equations.
+\begin{eqnarray*}
+\frac{\delta e_1(t)}{\delta t} &=& \left(a \cos (2 \pi t), b \sin (2 \pi t), 0\right) = \left(-a 2 \pi \sin (2 \pi t), b 2 \pi \cos (2 \pi t), 0\right)\\
+\frac{\delta e_2(u)}{\delta u} &=& \left(0, b \sin (2 \pi u), c \cos(2 \pi u)\right) = \left(0, b 2 \pi \cos (2 \pi u), - c 2 \pi \sin (2 \pi u)\right)
+\end{eqnarray*}
+
+The normal to the ellipses is the cross product of these two tangent vectors.
+\begin{eqnarray*}
+\frac{\delta e_1(t)}{\delta t} \times \frac{\delta e_2(u)}{\delta u} &=& (-4 \pi^2 b c \cos(2 \pi t) \sin (2 \pi u), -4 \pi^2 a c \sin(2 \pi t) \sin (2 \pi u), -4 \pi^2 a b \sin(2 \pi t) \cos (2 \pi u))\\
+&=& -4 \pi^2 a b c \left(\frac{\cos(2 \pi t) \sin (2 \pi u)}{a}, \frac{\sin(2 \pi t) \sin (2 \pi u)}{b}, \frac{\sin(2 \pi t) \cos (2 \pi u)}{c}\right)
+\end{eqnarray*}
+
+However, these normals are only valid when $e_1(t) = e_2(u)$. Setting $e_1(t) = e_2(u)$ and solving for $t$ and $u$, we get $t=u$ and $t=\frac{1}{4}, \frac{3}{4}$. Subbing in these values of $t$ and $u$, we get the final expression for the normal to be: $-4 \pi^2 a b c (0, \frac{1}{b}, 0)$, and $4 \pi^2 a b c (0, \frac{1}{b}, 0)$ (for the other side). 
+
+
+\item
+First, lets find $x^2$, $y^2$, $z^2$.
+\begin{eqnarray*}
+x^2 &= (a \cos (2 \pi t) \sin(2 \pi u))^2 =& a^2 \cos^2(2 \pi t) \sin^2 (2 \pi u)\\
+y^2 &= (b \sin (2 \pi t) \sin(2 \pi u))^2 =& b^2 \sin^2(2 \pi t) \sin^2 (2 \pi u)\\
+z^2 &= (c \cos (2 \pi u))^2 =& c^2 \cos^2(2 \pi u)\\
+\end{eqnarray*}
+
+Then lets calculate $\frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2}$.
+
+\begin{eqnarray*}
+\frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2} &=& \frac{a^2 \cos^2(2 \pi t) \sin^2 (2 \pi u)}{a^2} +  \frac{b^2 \sin^2(2 \pi t) \sin^2 (2 \pi u)}{b^2} + \frac{c^2 \cos^2(2 \pi u)}{c^2}\\
+&=& \cos^2(2 \pi t) \sin^2 (2 \pi u) +  \sin^2(2 \pi t) \sin^2 (2 \pi u) + \cos^2(2 \pi u)\\
+&=& \sin^2 (2 \pi u)(\cos^2(2 \pi t) +  \sin^2(2 \pi t))+ \cos^2(2 \pi u)\\
+&=& \sin^2 (2 \pi u) + \cos^2(2 \pi u)\\
+&=& 1
+\end{eqnarray*}
+
+Therefore, the implicit equation of a ellipsoid is $\frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2} = 1$.
+
+\item
+The normal to a point on the ellipse is simply the gradient of the equation derived in part c.
+\begin{align*}
+\nabla f(x,y,z) &= \left(\frac{\partial f}{\partial x},\frac{\partial f}{\partial y},\frac{\partial f}{\partial z}\right)\\
+&= \left(\frac{2x}{a^2},\frac{2y}{b^2},\frac{2z}{c^2}\right)\\
+&\text{If we sub in $x(t,u)$ for $x$, (and similarly for $y$ and $z$) then we get the normal vector in terms of $t,u$}\\
+&= 2 \left(\frac{\cos(2 \pi t) \sin(2 \pi u)}{a},\frac{\sin(2 \pi t) \sin(2 \pi u)}{b},\frac{\cos(2 \pi u)}{c}\right)\\
+\end{align*}
+
+\end{enumerate}
+
 %----------------------------------------------------------------------------------------
 
 %----------------------------------------------------------------------------------------
 %	PROBLEM 6
 %----------------------------------------------------------------------------------------
 
-\newpage
 \section{Question 6}
+\begin{figure}[h!]
+\centering
+	\includegraphics[width=\textwidth]{q6}
+\end{figure}
 %----------------------------------------------------------------------------------------
 \end{document}

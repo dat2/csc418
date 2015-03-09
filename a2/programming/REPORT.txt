@@ -1,0 +1,28 @@
+================================================================================
+Description of Parts
+================================================================================
+
+
+================================================================================
+Controls
+================================================================================
+Each slider is hooked up to the degree of freedom in the
+
+================================================================================
+Animation
+================================================================================
+The animation is performed by interpolating frames between keyframes, where
+a keyframe stores a vector of all the degrees at that particular keyframe. Each
+frame between key frames are interpolated so that the value of a degree slowly
+converges to the next keyframe.
+
+The animation I created is very simple. The penguin does a ballet spin jump and
+then turns to the viewer and does a bow. It's just complex enough that it tests
+all degrees of freedom.
+
+================================================================================
+Design
+================================================================================
+I created a shapes.h and a shapes.cpp file that holds a frustrum class (which
+is the trapezoidal prism shape) and a function to draw a cube, with all the
+correct normals.
