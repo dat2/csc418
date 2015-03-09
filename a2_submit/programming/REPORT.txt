@@ -1,0 +1,68 @@
+================================================================================
+Description of Parts
+================================================================================
+The head is constructed of 2 shapes:
+1. A trapezoidal prism head
+2. A rectangular upper Beak
+
+The torso is constructed of a trapezoidal prism.
+
+The arm is made of a trapezoidal prism, rotated 180 degrees and an extra hand on
+the end of this trapezoidal prism.
+
+The leg is constructed of a rectangular prism, and a trapezoidal prism for the
+foot. The foot is attached to the end of the leg, and rotated 90 degrees.
+
+================================================================================
+Rendering
+================================================================================
+The basic polgyon rendering was straightforward and very similar to a1, just
+with an extra coordinate now.
+
+I also had to enable depth testing, glEnable(GL_DEPTH_TEST).
+
+For the outlined rendering style, I had to enable the offset
+glEnable(GL_POLYGON_OFFSET_FILL).
+
+================================================================================
+Lighting
+================================================================================
+The light source is a directional light source that gets rotated around the xy
+plane. The control is from 0-360 and lets you rotate the light source all the
+way around the z axis, using the parametric form of a circle.
+l(t) = (x(t), y(t), 0)
+
+================================================================================
+Materials
+================================================================================
+I used a slightly modified version of some of the materials found on this website:
+http://www.it.hiof.no/~borres/j3d/explain/light/p-materials.html
+
+Specifically, polished silver for the metallic material and white rubber for the
+matte material.
+
+The default material is from this website:
+http://devernay.free.fr/cours/opengl/materials.html
+
+The white plastic material specifically.
+
+There are two extra render styles added for these materials.
+
+================================================================================
+Animation
+================================================================================
+The animation is performed by interpolating frames between keyframes, where
+a keyframe stores a vector of all the degrees at that particular keyframe. Each
+frame between key frames are interpolated so that the value of a degree slowly
+converges to the next keyframe.
+
+The animation I created is very simple. The penguin does a ballet spin jump and
+then turns to the viewer and does a bow. It's just complex enough that it tests
+all degrees of freedom.
+
+================================================================================
+Design
+================================================================================
+I created a shapes.h and a shapes.cpp file that holds a frustrum class (which
+is the trapezoidal prism shape) and a function to draw a cube, with all the
+correct normals.
