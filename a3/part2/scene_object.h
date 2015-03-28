@@ -48,10 +48,25 @@ public:
   bool intersect( Ray3D& ray, const Matrix4x4& worldToModel,
       const Matrix4x4& modelToWorld );
 
+  const std::string name;
+
 private:
   bool parseVertex(std::string&);
+  bool parseNormal(std::string&);
   bool parseFace(std::string&);
 
+  // TODO remove these
+  double xMin = -0.5;
+  double xMax = 0.5;
+
+  double yMin = -0.5;
+  double yMax = 0.5;
+
+  double zMin = -0.5;
+  double zMax = 0.5;
+
   std::vector<Point3D> vertices;
-  std::vector< std::vector<int> > faces;
+  std::vector<Vector3D> normals;
+  // pair of vertices,normals per face
+  std::vector< std::vector< std::pair<int, int> > > faces;
 };

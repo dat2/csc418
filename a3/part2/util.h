@@ -20,6 +20,15 @@
 #define M_PI	3.14159265358979323846
 #endif
 
+#ifndef RAYTRACE_LEVELS
+#define RAYTRACE_LEVELS 2
+#endif
+
+// #ifndef ANTIALIASING
+// #define ANTIALIASING
+// #endif
+
+
 class Point3D {
 public:
 	Point3D(); 
@@ -125,14 +134,40 @@ private:
 	double m_data[3];
 };
 
-Colour operator *(double s, const Colour& c); 
-Colour operator +(const Colour& u, const Colour& v); 
-std::ostream& operator <<(std::ostream& o, const Colour& c); 
+Colour operator *(double s, const Colour& c);
+Colour operator +(const Colour& u, const Colour& v);
+std::ostream& operator <<(std::ostream& o, const Colour& c);
+
+class Texture {
+public:
+  Texture(char *filename);
+  ~Texture();
+
+  Colour getColour(double u, double v);
+
+private:
+  // size
+  unsigned long int width;
+  long int height;
+
+  // Pixel buffer.
+  unsigned char* _rbuffer;
+  unsigned char* _gbuffer;
+  unsigned char* _bbuffer;
+};
 
 struct Material {
 	Material( Colour ambient, Colour diffuse, Colour specular, double exp ) :
+		ambient(ambient), diffuse(diffuse), specular(specular),
+		specular_exp(exp), reflection_coeff(exp/128.0), refraction_coeff(0), refractive_index(0) {}
+
+	Material( Colour ambient, Colour diffuse, Colour specular, double exp, double reflection ) :
 		ambient(ambient), diffuse(diffuse), specular(specular), 
-		specular_exp(exp) {}
+		specular_exp(exp), reflection_coeff(reflection), refraction_coeff(0), refractive_index(0) {}
+
+	Material( Colour ambient, Colour diffuse, Colour specular, double exp, double reflection, double refraction, double index ) :
+		ambient(ambient), diffuse(diffuse), specular(specular), 
+		specular_exp(exp), reflection_coeff(reflection), refraction_coeff(refraction), refractive_index(index) {}
 	
 	// Ambient components for Phong shading.
 	Colour ambient; 
@@ -142,6 +177,15 @@ struct Material {
 	Colour specular;
 	// Specular expoent.
 	double specular_exp;
+	// Reflection coeff.
+	double reflection_coeff;
+	// Refraction coeff.
+	double refraction_coeff;
+	// Refractive index.
+	double refractive_index;
+
+  bool hasTexture = false;
+  Texture *texture;
 };
 
 struct Intersection {
@@ -155,9 +199,12 @@ struct Intersection {
 	// (i.e. point = ray.origin + t_value * ray.dir)
 	// This is used when you need to intersect multiply objects and
 	// only want to keep the nearest intersection.
-	double t_value;	
+	double t_value;
 	// Set to true when no intersection has occured.
 	bool none;
+
+  double u;
+  double v;
 };
 
 // Ray structure. 

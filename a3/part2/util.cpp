@@ -4,12 +4,13 @@
      This code was originally written by Jack Wang for
 		    CSC418, SPRING 2005
 
-		implementations of util.h	
+		implementations of util.h
 
 ***********************************************************/
 
 #include <cmath>
 #include "util.h"
+#include "bmp_io.h"
 
 Point3D::Point3D() {
 	m_data[0] = 0.0;
@@ -392,5 +393,27 @@ std::ostream& operator <<(std::ostream& os, const Matrix4x4& M) {
 		<< M[3][2] << " " << M[3][3] << "]";
 }
 
+Texture::Texture(char *filename) {
+  bmp_read(filename, &width, &height, &_rbuffer, &_gbuffer, &_bbuffer);
+}
 
+Texture::~Texture() {
+}
+
+Colour Texture::getColour(double u, double v) {
+  u = 1.0 - std::min(1.0, std::abs(u));
+  v = 1.0 - std::min(1.0, std::abs(v));
+
+  int x = (int)(u * static_cast<double>(width - 1));
+  int y = (int)(v * static_cast<double>(height - 1));
+
+  Colour col(_rbuffer[y * width + x], _gbuffer[y * width + x], _bbuffer[y * width + x]);
+  col[0] = ((double) col[0]) / 255.0;
+  col[1] = ((double) col[1]) / 255.0;
+  col[2] = ((double) col[2]) / 255.0;
+
+  col.clamp();
+
+  return col;
+}
 

@@ -11,10 +11,7 @@
 #include <cmath>
 #include "light_source.h"
 
-enum ShadingMode { SIG, DIFF, PHONG };
-ShadingMode mode = PHONG;
-
-void PointLight::shade( Ray3D& ray ) {
+void PointLight::shade( Ray3D& ray, bool isShadow ) {
 	// TODO: implement this function to fill in values for ray.col 
 	// using phong shading.  Make sure your vectors are normalized, and
 	// clamp colour values to 1.0.
@@ -34,21 +31,32 @@ void PointLight::shade( Ray3D& ray ) {
 	b.normalize();
 	r.normalize();
 
-	Colour ambient = mat->ambient * _col_ambient;
-	Colour diffuse = fmax(0, s.dot(n)) * mat->diffuse * _col_diffuse ;
-	Colour specular = pow(fmax(0, r.dot(b)), mat->specular_exp) * mat->specular * _col_specular;
+	if (isShadow) {
+    if(ray.intersection.mat->hasTexture) {
+      double multiplier = ray.intersection.none ? 0.4 : 0.3;
+      ray.col = multiplier * mat->texture->getColour(ray.intersection.u, ray.intersection.v) * _col_diffuse;
+    } else {
+      ray.col = 0.3 * mat->diffuse * _col_diffuse;
+    }
+  } else {
+    Colour ambient = mat->ambient * _col_ambient;
+    Colour diffuse;
+    // Add gloss to specular
+    Colour specular = pow(fmax(0, r.dot(b)), mat->specular_exp) * mat->specular * _col_specular;
 
-	// ray.col = ambient + diffuse + specular;
-	switch(mode){
-		case SIG:
-			ray.col = ray.intersection.mat->diffuse;
-			break;
-		case DIFF:
-			ray.col = ambient + diffuse;
-			break;
-		case PHONG:
-			ray.col = ambient + diffuse + specular;
-			break;
+    Colour materialDiffuse;
+    if(ray.intersection.mat->hasTexture) {
+      materialDiffuse = mat->texture->getColour(ray.intersection.u, ray.intersection.v);
+    } else {
+      materialDiffuse = mat->diffuse;
+    }
+
+    diffuse = fmax(0, s.dot(n)) * materialDiffuse * _col_diffuse;
+    if(ray.intersection.mat->hasTexture) {
+      ambient = diffuse * ambient;
+    }
+
+    ray.col = ambient + diffuse + specular;
 	}
 	ray.col.clamp();
 }
